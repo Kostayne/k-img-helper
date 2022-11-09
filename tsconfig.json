@@ -1,0 +1,11 @@
+{
+    "exclude": ["node_modules"],
+    "include": ["src"],
+
+    "compilerOptions": {
+        "module": "ESNext",
+        "outDir": "dist",
+        "sourceMap": true,
+        "noImplicitAny": true
+    }
+}
