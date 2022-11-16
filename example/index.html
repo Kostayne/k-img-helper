@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KImgHelper site example</title>
+
+    <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+    <!-- no src set, no fixed sizes, huge, not webp -->
+    <div class="wrapper">
+        <!-- no attrs, old format -->
+        <img src="./public/hunter.jpg" />
+
+        <!-- conditional render img -->
+        <div id="tabletImgContainer" />
+    </div>
+
+    <script defer>
+        // emulating breakpoints conditional render
+        const imgContainer = document.getElementById('tabletImgContainer');
+
+        const findImg = () => {
+            return document.getElementById('tabletImg');
+        }
+
+        const showImg = () => {
+            const img = document.createElement('img');
+            img.src = "./public/bebop.jpg";
+            img.alt = "cowboy bebop";
+            img.id = "tabletImg";
+
+            imgContainer.appendChild(img);
+        }
+
+        const hideImg = (img) => {
+            imgContainer.removeChild(img);
+        };
+
+        window.addEventListener('resize', (e) => {
+            const w = window.innerWidth;
+            const h = window.innerHeight;
+
+            const img = findImg();
+
+            if (w <= 768) {
+
+                if (!img) {
+                    showImg();
+                }
+            } else {
+                if (img) {
+                    hideImg(img);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

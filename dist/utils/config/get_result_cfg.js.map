@@ -1,0 +1,1 @@
+{"version":3,"file":"get_result_cfg.js","sourceRoot":"","sources":["../../../src/utils/config/get_result_cfg.ts"],"names":[],"mappings":"AAAA,OAAO,EAAE,UAAU,EAAE,MAAM,6BAA6B,CAAC;AAGzD,MAAM,UAAU,YAAY,CAAC,OAAyB,EAAE,MAAwB;IAC5E,OAAO;QACH,GAAG,UAAU;QACb,GAAG,OAAO;QACV,GAAG,MAAM;KACZ,CAAC;AACN,CAAC"}

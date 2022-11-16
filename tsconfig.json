@@ -6,6 +6,13 @@
         "module": "ESNext",
         "outDir": "dist",
         "sourceMap": true,
-        "noImplicitAny": true
+        "noImplicitAny": true,
+        "moduleResolution": "NodeNext",
+        "target": "ESNext",
+        "lib": ["ES6", "DOM"]
+    },
+
+    "ts-node": {
+        "esm": true
     }
 }

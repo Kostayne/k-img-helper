@@ -1,13 +1,23 @@
 import { promises as fsPromises } from 'fs';
+import { IUserConfig } from '../../types/cfg.type.js';
+import { loadJsonFromFile } from '../load_json_from_file.js';
+import { Logger } from '../logger.js';
 
-export class KImgHelper {
-    async load(cfgFullPath: string) {
+export class ImgHelperConfigLoader {
+    static async loadFromRoot() {
+        return this.loadFrom('./.imghelper.config.json');
+    }
+
+    static async loadFrom(filePath: string) {
         try {
-            await fsPromises.stat(cfgFullPath);
+            await fsPromises.stat(filePath);
         } catch(err) {
-            console.error(`Can't read the config!`);
-            console.error(err);
+            Logger.logError('Can\'t open config? Does it exist?');
+
             return;
         }
+
+        const cfg = await loadJsonFromFile(filePath);
+        return cfg as IUserConfig;
     }
 }

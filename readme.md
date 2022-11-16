@@ -1,5 +1,8 @@
 # K-img-helper
-This tool will optimize images on your site. It can resize images depending on css breakpoints and convert old img formats to new. All automatic!
+Npm package for image optimization.
+
+## Features
+
 
 ## TODO
 ### CFG
