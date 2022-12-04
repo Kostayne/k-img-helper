@@ -7,10 +7,10 @@
   "private": true,
   "type": "module",
   "dependencies": {
-    "ajv": "^8.11.2",
     "chalk": "4.1.2",
     "commander": "^9.4.1",
     "image-type": "^5.1.0",
+    "jsonschema": "^1.4.1",
     "puppeteer": "^19.2.2",
     "sharp": "^0.31.2"
   },
@@ -29,7 +29,8 @@
   },
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "dev": "ts-node src/index.ts",
+    "old-dev": "npm run build && node dist/index.js",
+    "dev": "ts-node ./src/index.ts",
     "lint": "eslint --fix --ext .ts ."
   }
 }

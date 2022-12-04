@@ -1,4 +1,5 @@
 import { IBreakPoint } from './breakpoint.type.js';
+import { ImgFormats } from './img_formats.enum.js';
 
 export interface IUserConfig {
     url: string;
@@ -9,9 +10,12 @@ export interface IUserConfig {
     defaultBreakPoint?: IBreakPoint;
     breakPoints?: IBreakPoint[];
     resizeThreshold?: number;
+    resizeDelay?: number;
+    
+    imgNameTemplate?: string;
 
     convert?: boolean;
-    imgFormat?: string;
+    imgFormat?: ImgFormats;
 
     // detect attrs
     detectAltAttr?: boolean;
@@ -24,6 +28,7 @@ export interface IUserConfig {
     log?: boolean;
     logSkipped?: boolean;
     logImgConvert?: boolean;
+    logResizes?: boolean;
 }
 
 export type IResultConfig = Required<IUserConfig> & {

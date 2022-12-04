@@ -1,3 +1,14 @@
-import Ajv from 'ajv';
+export const breakPointValidationSchema = {
+    id: 'breakPoint',
+    type: 'object',
 
-console.log(Ajv);
+    properties: {
+        width: {
+            type: 'number',
+        },
+
+        height: {
+            type: 'number',
+        },
+    },
+};

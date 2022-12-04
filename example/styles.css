@@ -6,3 +6,8 @@
     display: block;
     max-width: 100%;
 }
+
+.wrapper .fixed-w {
+    display: block;
+    max-width: 350px !important;
+}

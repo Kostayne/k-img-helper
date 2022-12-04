@@ -14,6 +14,9 @@
         <!-- no attrs, old format -->
         <img src="./public/hunter.jpg" />
 
+        <!-- same src, other width -->
+        <img src="./public/hunter.jpg" class="fixed-w" />
+
         <!-- conditional render img -->
         <div id="tabletImgContainer" />
     </div>
@@ -39,14 +42,13 @@
             imgContainer.removeChild(img);
         };
 
-        window.addEventListener('resize', (e) => {
+        const checkWidth = () => {
             const w = window.innerWidth;
             const h = window.innerHeight;
 
             const img = findImg();
 
             if (w <= 768) {
-
                 if (!img) {
                     showImg();
                 }
@@ -55,6 +57,12 @@
                     hideImg(img);
                 }
             }
+        };
+
+        checkWidth();
+
+        window.addEventListener('resize', (e) => {
+            checkWidth();
         });
     </script>
 </body>

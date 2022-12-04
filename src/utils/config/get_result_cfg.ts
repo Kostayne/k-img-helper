@@ -1,6 +1,5 @@
 import { defaultCfg } from '../../shared/default_cfg.js';
-import { IUserConfig } from '../../types/cfg.type.js';
-import { IResultConfig } from '../../types/result_cfg.type.js';
+import { IResultConfig, IUserConfig } from '../../types/cfg.type.js';
 
 export function getResultCfg(fileCfg: IUserConfig, cliCfg: IUserConfig): IResultConfig {
     const mixedCfg = {

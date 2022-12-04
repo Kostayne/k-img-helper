@@ -1,20 +1,27 @@
-import { IBreakPoint } from '../../../types/breakpoint.type.js';
 import { IUserConfig } from '../../../types/cfg.type.js';
+import { Validator } from 'jsonschema';
+import { breakPointValidationSchema } from '../../../validator/breakpoint.val.schema.js';
+import { userConfigValidationSchema } from '../../../validator/user_config.val.schema.js';
 
 export class BaseConfigValidator {
     validate(cfg: IUserConfig) {
-        if (!cfg.url) {
-            return 'Site url is not provided!';
+        const v = new Validator();
+
+        v.addSchema(breakPointValidationSchema);
+        const res = v.validate(cfg, userConfigValidationSchema);
+        
+        if (res.errors) {
+            return res.errors.toString();
         }
 
-        const breakPoints = cfg.breakPoints || [];
-        let err = '';
+        const allowedFormats = [undefined, 'avif', 'webp'];
 
-        for (let i = 0; i < breakPoints.length; i++) {
-            err = this.validateBreakPoint(breakPoints[i]);
-            if (err) return err;
-        }
+        allowedFormats.forEach(f => {
+            if (f !== cfg.imgFormat) {
+                return 'Img format must be "avif" or "webp"';
+            }
+        });
 
-        err = this.validateBreakPoint(cfg.defaultBreakPoint);
+        return '';
     }
 }

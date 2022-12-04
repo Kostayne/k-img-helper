@@ -1,4 +1,5 @@
 import { IUserConfig } from '../types/cfg.type.js';
+import { ImgFormats } from '../types/img_formats.enum.js';
 
 export const defaultCfg: IUserConfig = {
     url: '',
@@ -36,8 +37,11 @@ export const defaultCfg: IUserConfig = {
     ],
 
     convert: true,
-    imgFormat: 'webp',
+    imgFormat: ImgFormats.webp,
     resizeThreshold: 5,
+    resizeDelay: 100,
+
+    imgNameTemplate: '$name_w$width_h$height',
 
     detectAltAttr: true,
     detectSizeAttr: true,
@@ -48,4 +52,5 @@ export const defaultCfg: IUserConfig = {
     log: true,
     logSkipped: true,
     logImgConvert: true,
+    logResizes: true,
 };

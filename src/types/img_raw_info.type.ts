@@ -1,4 +1,6 @@
-export interface IImgRawInfo {
+import { IBreakPoint } from './breakpoint.type.js';
+
+export interface IRawImageInfo {
     src: string;
     alt: string;
     srcSet: string;
@@ -6,4 +8,6 @@ export interface IImgRawInfo {
     width: string;
     clientHeight: number;
     clientWidth: number;
+    selector: string;
+    breakPoint: IBreakPoint;
 }
