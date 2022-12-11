@@ -286,7 +286,7 @@ export class OptimizeCmd extends Cmd {
                 return _getResult();
             }
 
-            sourceImgBuffer = await this.convertImgToExt(imgFullPath, sourceImgBuffer, this.cfg.imgFormat);
+            sourceImgBuffer = await this.convertImgToExt(sourceImgBuffer, this.cfg.imgFormat);
             resultImgPath = pathAfterConvertation;
 
             try {
@@ -395,7 +395,7 @@ export class OptimizeCmd extends Cmd {
         }
     }
 
-    protected async convertImgToExt(imgFullPath: string, imgBuffer: Buffer, ext: ImgFormats) {
+    protected async convertImgToExt(imgBuffer: Buffer, ext: ImgFormats) {
         const processingImg = await sharp(imgBuffer);
         this.transformSharpImgToFormat(processingImg, ext);
         return processingImg.toBuffer();
