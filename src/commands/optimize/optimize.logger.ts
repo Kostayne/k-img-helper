@@ -1,18 +1,14 @@
-import { IUserConfig } from '../../types/cfg.type.js';
-import { Logger } from '../../utils/logger.js';
+import { OptionalLogger } from '../../utils/loggers/optional_logger.js';
 import { IConvertedImgInfo } from './types/convertation_to_log.type.js';
 import { IResizesToLogInfo } from './types/resizes_to_log.type.js';
 import { ISrcSetLogInfo } from './types/scrset_log_info.type.js';
 import { ITypeMismatchToLog } from './types/type_mismatch_to_log.type.js';
 
-export class OptimizeImgLogger {
+export class OptimizeCmdLogger extends OptionalLogger {
     public srcSetsToLog: ISrcSetLogInfo[] = [];
     public typeMismatchesToLog: ITypeMismatchToLog[] = [];
     public convertedImgsToLog: IConvertedImgInfo[] = [];
     public resizesToLog: IResizesToLogInfo[] = [];
-
-    // eslint-disable-next-line no-unused-vars
-    constructor(protected cfg: IUserConfig) {}
 
     public logInfo() {
         // converted imgs log 
@@ -74,21 +70,5 @@ export class OptimizeImgLogger {
 
     public logSpace() {
         this.logMsg('');
-    }
-
-    public logMsg(msg: string) {
-        if (this.cfg.log) {
-            console.log(msg);
-        }
-    }
-
-    public logWarning(msg: string) {
-        if (this.cfg.log) {
-            Logger.logWarning(msg);
-        }
-    }
-
-    public logError(msg: string) {
-        Logger.logError(msg);
     }
 }

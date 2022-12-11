@@ -6,6 +6,8 @@ export interface IUserConfig {
     urlImgPrefix?: string;
     publicDir?: string;
     
+    deleteOriginal?: boolean;
+
     resize?: boolean;
     defaultBreakPoint?: IBreakPoint;
     breakPoints?: IBreakPoint[];

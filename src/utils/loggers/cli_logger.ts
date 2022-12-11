@@ -1,6 +1,6 @@
 import chalk from 'chalk';
 
-export class Logger {
+export class CliLogger {
     static logError(err: string) {
         console.error(
             chalk.redBright(err)

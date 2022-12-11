@@ -13,13 +13,16 @@ import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, extname, join, parse as parsePath } from 'node:path';
 import { IDomImgInfo } from '../../types/dom_img_info.type.js';
 import { ISrcSetLogInfo } from './types/scrset_log_info.type.js';
+import { CliLogger } from '../../utils/loggers/cli_logger.js';
+import { OptimizeCmdLogger } from './optimize.logger.js';
 
 export class OptimizeCmd extends Cmd {
+    protected page: Page;
+    protected browser: Browser;
     protected rawImgsInfo: IRawImageInfo[] = [];
     protected publicDirContent: string[] = [];
     protected finalImgs: IFinalImageInfo[] = [];
-    protected browser: Browser;
-    protected page: Page;
+    protected logger: OptimizeCmdLogger = new OptimizeCmdLogger(this.cfg);
 
     protected async setupBrowser() {
         this.browser = await puppeteer.launch({
@@ -86,7 +89,7 @@ export class OptimizeCmd extends Cmd {
         try {
             this.publicDirContent = await readdir(this.cfg.publicDir);
         } catch(e) {
-            this.logger.logError('Can\'t open specified public folder, does it exist?');
+            CliLogger.logError('Can\'t open specified public folder, does it exist?');
             process.exit(1);
         }
     }
@@ -297,7 +300,7 @@ export class OptimizeCmd extends Cmd {
                     imgOriginalPath: imgFullPath,
                 });
             } catch(e) {
-                this.logger.logError(`Could not save converted image "${resultImgPath}"`);
+                CliLogger.logError(`Could not save converted image "${resultImgPath}"`);
             }
         }
 

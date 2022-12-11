@@ -36,6 +36,8 @@ export const defaultCfg: IUserConfig = {
         }
     ],
 
+    deleteOriginal: true,
+
     convert: true,
     imgFormat: ImgFormats.webp,
     resize: true,
