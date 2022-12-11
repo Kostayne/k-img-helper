@@ -13,8 +13,6 @@ import { readdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, extname, join, parse as parsePath } from 'node:path';
 import { IDomImgInfo } from '../../types/dom_img_info.type.js';
 import { ISrcSetLogInfo } from './types/scrset_log_info.type.js';
-import { IConvertedImgInfo } from './types/convertation_to_log.type.js';
-import { IResizesToLogInfo } from './types/resizes_to_log.type.js';
 
 export class OptimizeCmd extends Cmd {
     protected rawImgsInfo: IRawImageInfo[] = [];
@@ -23,11 +21,6 @@ export class OptimizeCmd extends Cmd {
     protected browser: Browser;
     protected page: Page;
 
-    // log purpose vars
-    protected convertedImgsToLog: IConvertedImgInfo[] = [];
-    protected resizesToLog: IResizesToLogInfo[] = [];
-    protected srcSetsToLog: ISrcSetLogInfo[] = [];
-    
     protected async setupBrowser() {
         this.browser = await puppeteer.launch({
             defaultViewport: this.cfg.defaultBreakPoint,
@@ -67,7 +60,7 @@ export class OptimizeCmd extends Cmd {
             await this.processImg(imgInfo);
         }
 
-        this.logInfo();
+        this.logger.logInfo();
 
         await this.browser.close();
     }
@@ -214,35 +207,41 @@ export class OptimizeCmd extends Cmd {
         // destructuring object syntax for let
         ({ resultImgPath, sourceImgBuffer } = convertationRes);
 
-        const { resizes: imgResizes, resizesToLog } = await this.handleImgResizes(
-            imgInfo, 
-            resultImgPath, 
-            sameSrcImgs,
-            sourceImgBuffer
-        );
+        let resizes: IResizedImage[] = [];
 
-        // there is no point to log empty arr
-        if (resizesToLog.length > 0) {
-            this.resizesToLog.push({
-                imgPath: imgFullPath,
-                resizes: resizesToLog,
-                selector: imgInfo.selector,
-            });
+        if (this.cfg.resize) {
+            const { resizes: imgResizes, resizesToLog } = await this.handleImgResizes(
+                imgInfo, 
+                resultImgPath, 
+                sameSrcImgs,
+                sourceImgBuffer
+            );
+
+            resizes = imgResizes;
+
+            // there is no point to log empty arr
+            if (resizesToLog.length > 0) {
+                this.logger.resizesToLog.push({
+                    imgPath: imgFullPath,
+                    resizes: resizesToLog,
+                    selector: imgInfo.selector,
+                });
+            }
         }
 
-        const srcSet = this.getImgSrcSetByResizes(imgResizes);
+        const srcSet = this.getImgSrcSetByResizes(resizes);
 
         const srcSetInfo: ISrcSetLogInfo = {
             selector: imgInfo.selector,
             srcset: srcSet,
         };
 
-        this.addToLogSrcSetIfNeeded(srcSetInfo, imgFullPath, imgInfo.selector);
+        this.addSrcSetToLogIfNeeded(srcSetInfo, imgFullPath, imgInfo.selector);
 
         this.finalImgs.push({
             src: imgInfo.src,
             imgFullPath: resultImgPath,
-            resizes: imgResizes,
+            resizes,
             srcSet,
         });
     }
@@ -284,10 +283,6 @@ export class OptimizeCmd extends Cmd {
             if (alreadyConverted) {
                 resultBuffer = await readFile(pathAfterConvertation);
                 resultImgPath = pathAfterConvertation;
-
-                console.log('Orig', imgFullPath);
-                console.log('After', pathAfterConvertation);
-                console.log('Already converted');
                 return _getResult();
             }
 
@@ -296,14 +291,14 @@ export class OptimizeCmd extends Cmd {
 
             try {
                 await writeFile(resultImgPath, sourceImgBuffer);
+
+                this.logger.convertedImgsToLog.push({
+                    format: this.cfg.imgFormat,
+                    imgOriginalPath: imgFullPath,
+                });
             } catch(e) {
                 this.logger.logError(`Could not save converted image "${resultImgPath}"`);
             }
-
-            this.convertedImgsToLog.push({
-                format: this.cfg.imgFormat,
-                imgOriginalPath: imgFullPath,
-            });
         }
 
         return _getResult();
@@ -402,8 +397,6 @@ export class OptimizeCmd extends Cmd {
 
     protected async convertImgToExt(imgFullPath: string, imgBuffer: Buffer, ext: ImgFormats) {
         const processingImg = await sharp(imgBuffer);
-        this.logger.logImgConvert(imgFullPath, this.cfg.imgFormat);
-
         this.transformSharpImgToFormat(processingImg, ext);
         return processingImg.toBuffer();
     }
@@ -466,44 +459,17 @@ export class OptimizeCmd extends Cmd {
         }
     }
 
-    protected addToLogSrcSetIfNeeded(srcSetInfo: ISrcSetLogInfo, imgOrigPath: string, selector: string) {
-        const convertedImg = this.convertedImgsToLog.find(info => {
+    protected addSrcSetToLogIfNeeded(srcSetInfo: ISrcSetLogInfo, imgOrigPath: string, selector: string) {
+        const convertedImg = this.logger.convertedImgsToLog.find(info => {
             return info.imgOriginalPath == imgOrigPath;
         });
 
-        const resizedImg = this.resizesToLog.find(r => {
+        const resizedImg = this.logger.resizesToLog.find(r => {
             r.selector == selector;
         });
 
         if (convertedImg || resizedImg) {
-            this.srcSetsToLog.push(srcSetInfo);
+            this.logger.srcSetsToLog.push(srcSetInfo);
         }
-    }
-
-    protected logInfo() {
-        // converted imgs log 
-        this.convertedImgsToLog.forEach(c => {
-            this.logger.logImgConvert(c.imgOriginalPath, c.format);
-        });
-
-        if (this.convertedImgsToLog.length > 0) {
-            this.logger.logSpace();
-        }
-        
-        // resizes log
-        this.resizesToLog.forEach(resizeInfo => {
-            this.logger.logResizesArr(resizeInfo);
-            this.logger.logSpace();
-        });
-
-        if (this.resizesToLog.length > 0) {
-            this.logger.logSpace();
-        }
-
-        // srcset log
-        this.srcSetsToLog.forEach(s => {
-            this.logger.logSrcSet(s.srcset, s.selector);
-            this.logger.logSpace();
-        });
     }
 }

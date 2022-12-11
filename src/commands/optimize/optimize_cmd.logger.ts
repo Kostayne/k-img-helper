@@ -1,33 +1,68 @@
 import { IUserConfig } from '../../types/cfg.type.js';
 import { Logger } from '../../utils/logger.js';
+import { IConvertedImgInfo } from './types/convertation_to_log.type.js';
 import { IResizesToLogInfo } from './types/resizes_to_log.type.js';
+import { ISrcSetLogInfo } from './types/scrset_log_info.type.js';
+import { ITypeMismatchToLog } from './types/type_mismatch_to_log.type.js';
 
 export class OptimizeImgLogger {
+    public srcSetsToLog: ISrcSetLogInfo[] = [];
+    public typeMismatchesToLog: ITypeMismatchToLog[] = [];
+    public convertedImgsToLog: IConvertedImgInfo[] = [];
+    public resizesToLog: IResizesToLogInfo[] = [];
+
     // eslint-disable-next-line no-unused-vars
     constructor(protected cfg: IUserConfig) {}
 
-    public logSrcSet(srcSet: string, selector: string) {
+    public logInfo() {
+        // converted imgs log 
+        this.convertedImgsToLog.forEach(c => {
+            this.logImgConvert(c.imgOriginalPath, c.format);
+        });
+
+        if (this.convertedImgsToLog.length > 0) {
+            this.logSpace();
+        }
+        
+        // resizes log
+        this.resizesToLog.forEach(resizeInfo => {
+            this.logResizesArr(resizeInfo);
+            this.logSpace();
+        });
+
+        if (this.resizesToLog.length > 0) {
+            this.logSpace();
+        }
+
+        // srcset log
+        this.srcSetsToLog.forEach(s => {
+            this.logSrcSet(s.srcset, s.selector);
+            this.logSpace();
+        }); 
+    }
+
+    protected logSrcSet(srcSet: string, selector: string) {
         if (this.logSrcSet) {
-            this.logInfo(`Generated srcset for selector "${selector}"`);
-            this.logInfo(srcSet);
+            this.logMsg(`Generated srcset for selector "${selector}"`);
+            this.logMsg(srcSet);
         }
     }
 
-    public logResizesArr({ imgPath, resizes, selector }: IResizesToLogInfo) {
+    protected logResizesArr({ imgPath, resizes, selector }: IResizesToLogInfo) {
         if (!this.cfg.logResizes) { 
             return;
         }
 
-        this.logInfo(`Created resizes for "${imgPath}" with selector "${selector}":`);
+        this.logMsg(`Created resizes for "${imgPath}" with selector "${selector}":`);
 
-        this.logInfo(
+        this.logMsg(
             JSON.stringify(resizes, null, '\t')
         );
     }
 
-    public logImgConvert(filePath: string, resFormat: string) {
+    protected logImgConvert(filePath: string, resFormat: string) {
         if (this.cfg.logImgConvert) {
-            this.logInfo(`Converted "${filePath}" to .${resFormat};`);
+            this.logMsg(`Converted "${filePath}" to .${resFormat};`);
         }
     }
 
@@ -38,10 +73,10 @@ export class OptimizeImgLogger {
     }
 
     public logSpace() {
-        this.logInfo('');
+        this.logMsg('');
     }
 
-    public logInfo(msg: string) {
+    public logMsg(msg: string) {
         if (this.cfg.log) {
             console.log(msg);
         }
@@ -53,7 +88,7 @@ export class OptimizeImgLogger {
         }
     }
 
-    logError(msg: string) {
+    public logError(msg: string) {
         Logger.logError(msg);
     }
 }

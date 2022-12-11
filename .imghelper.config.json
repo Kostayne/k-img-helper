@@ -3,5 +3,6 @@
     "urlImgPrefix": "file:///home/kostayne/Documents/projects/k-img-helper/example/",
     "publicDir": "./example",
 
-    "logResizes": false
+    "logResizes": false,
+    "resize": false
 }

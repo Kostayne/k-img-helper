@@ -4,8 +4,8 @@
     "plugins": ["@typescript-eslint"],
 
     "rules": {
-        "quotes": ["warn", "single"],
-        "semi": "warn",
+        "quotes": ["error", "single"],
+        "semi": ["error", "always"],
         "eol-last": "warn",
         "no-unused-vars": "warn"
     }

@@ -14,6 +14,7 @@ command.
     .option('-c, --convert', 'enable / disable image convertation')
     .option('-s, --size-threshold <percent>', 'how big may be img from optimal size in percents')
     .option('-p, --public-dir', 'path to public dir')
+    .option('-r, --resize', 'enables img resize')
     .option('--log-skipped', 'log warnings for skipped images?')
     .option('--log-resizes', 'log info about created img resizes')
     .option('-d, --resizeDelay', 'delay after resizes (needs to wait for js event handle)')
