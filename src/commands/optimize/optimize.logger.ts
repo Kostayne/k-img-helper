@@ -1,14 +1,24 @@
-import { OptionalLogger } from '../../utils/loggers/optional_logger.js';
+import { ImgConverterLogger } from '../../modules/img_converter/img_converter.logger.js';
+import { IResultConfig } from '../../types/cfg.type.js';
+import { OptionalCliLogger } from '../../utils/loggers/optional_logger.js';
 import { IConvertedImgInfo } from './types/convertation_to_log.type.js';
 import { IResizesToLogInfo } from './types/resizes_to_log.type.js';
 import { ISrcSetLogInfo } from './types/scrset_log_info.type.js';
 import { ITypeMismatchToLog } from './types/type_mismatch_to_log.type.js';
 
-export class OptimizeCmdLogger extends OptionalLogger {
+export class OptimizeCmdLogger extends OptionalCliLogger {
     public srcSetsToLog: ISrcSetLogInfo[] = [];
     public typeMismatchesToLog: ITypeMismatchToLog[] = [];
     public convertedImgsToLog: IConvertedImgInfo[] = [];
     public resizesToLog: IResizesToLogInfo[] = [];
+
+    constructor(
+        // eslint-disable-next-line no-unused-vars
+        protected imgConverterLogger: ImgConverterLogger,
+        protected cfg: IResultConfig,
+    ) {
+        super(cfg);
+    }
 
     public logInfo() {
         // converted imgs log 
@@ -16,7 +26,7 @@ export class OptimizeCmdLogger extends OptionalLogger {
             this.logImgConvert(c.imgOriginalPath, c.format);
         });
 
-        if (this.convertedImgsToLog.length > 0) {
+        if (this.imgConverterLogger.convertedImgsToLog.length > 0) {
             this.logSpace();
         }
         

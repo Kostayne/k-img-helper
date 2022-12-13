@@ -10,11 +10,14 @@ import { IResizedImage } from '../../types/img_resize_result.type.js';
 import { checkFileExistst } from '../../utils/check_file_exists.js';
 import { ImgFormats } from '../../types/img_formats.enum.js';
 import { readdir, readFile, writeFile } from 'node:fs/promises';
-import { dirname, extname, join, parse as parsePath } from 'node:path';
+import { extname, join, parse as parsePath } from 'node:path';
 import { IDomImgInfo } from '../../types/dom_img_info.type.js';
 import { ISrcSetLogInfo } from './types/scrset_log_info.type.js';
 import { CliLogger } from '../../utils/loggers/cli_logger.js';
 import { OptimizeCmdLogger } from './optimize.logger.js';
+import { ImgConverter } from '../../modules/img_converter/img_convert.module.js';
+import { IResultConfig } from '../../types/cfg.type.js';
+import { transformSharpImgToFormat } from '../../utils/sharp_img_to_format.js';
 
 export class OptimizeCmd extends Cmd {
     protected page: Page;
@@ -22,7 +25,16 @@ export class OptimizeCmd extends Cmd {
     protected rawImgsInfo: IRawImageInfo[] = [];
     protected publicDirContent: string[] = [];
     protected finalImgs: IFinalImageInfo[] = [];
-    protected logger: OptimizeCmdLogger = new OptimizeCmdLogger(this.cfg);
+
+    constructor(
+        // eslint-disable-next-line no-unused-vars
+        protected imgConverter: ImgConverter,
+        // eslint-disable-next-line no-unused-vars
+        protected logger: OptimizeCmdLogger,
+        protected cfg: IResultConfig,
+    ) {
+        super(cfg);
+    }
 
     protected async setupBrowser() {
         this.browser = await puppeteer.launch({
@@ -202,10 +214,10 @@ export class OptimizeCmd extends Cmd {
         // needs for convertation & resize checks
         const sameSrcImgs = this.finalImgs.filter(img => img.src === imgInfo.src);
 
-        const convertationRes = await this.handleImgConvertation(
-            sourceImgBuffer, 
-            imgFullPath,
-        );
+        const { ext } = await imageType(sourceImgBuffer);
+        await this.checkNameWithTypeMismatch(imgFullPath, ext);
+
+        const convertationRes = await this.imgConverter.convertImg(sourceImgBuffer, imgFullPath, ext);
 
         // destructuring object syntax for let
         ({ resultImgPath, sourceImgBuffer } = convertationRes);
@@ -257,54 +269,6 @@ export class OptimizeCmd extends Cmd {
                 this.logger.logWarning(`Image ${imgFullPath} should have .${ext} extention!`);
             }
         }
-    }
-
-    /**
-     * @description saves img in new format if needed & returns path to it
-     */
-    protected async handleImgConvertation(
-        sourceImgBuffer: Buffer,
-        imgFullPath: string,
-    ) {
-        const { ext } = await imageType(sourceImgBuffer);
-        await this.checkNameWithTypeMismatch(imgFullPath, ext);
-
-        let resultImgPath = imgFullPath;
-        let resultBuffer = sourceImgBuffer;
-
-        const _getResult = () => {
-            return {
-                resultImgPath,
-                sourceImgBuffer: resultBuffer,
-            };
-        };
-
-        if (this.cfg.convert && ext != this.cfg.imgFormat) {
-            const pathAfterConvertation = this.getNameWithNewExt(imgFullPath, this.cfg.imgFormat);
-            const alreadyConverted = await checkFileExistst(pathAfterConvertation);
-
-            if (alreadyConverted) {
-                resultBuffer = await readFile(pathAfterConvertation);
-                resultImgPath = pathAfterConvertation;
-                return _getResult();
-            }
-
-            sourceImgBuffer = await this.convertImgToExt(sourceImgBuffer, this.cfg.imgFormat);
-            resultImgPath = pathAfterConvertation;
-
-            try {
-                await writeFile(resultImgPath, sourceImgBuffer);
-
-                this.logger.convertedImgsToLog.push({
-                    format: this.cfg.imgFormat,
-                    imgOriginalPath: imgFullPath,
-                });
-            } catch(e) {
-                CliLogger.logError(`Could not save converted image "${resultImgPath}"`);
-            }
-        }
-
-        return _getResult();
     }
 
     // TODO break this into individual fn
@@ -385,7 +349,7 @@ export class OptimizeCmd extends Cmd {
         const sharpImg = sharp(buffer)
             .resize(size.clientWidth, size.clientHeight);
 
-        this.transformSharpImgToFormat(sharpImg, format);
+        transformSharpImgToFormat(sharpImg, format);
         return sharpImg.toBuffer();
     }
 
@@ -396,19 +360,6 @@ export class OptimizeCmd extends Cmd {
             this.logger.logImgSkip(imgFullPath);
             return undefined;
         }
-    }
-
-    protected async convertImgToExt(imgBuffer: Buffer, ext: ImgFormats) {
-        const processingImg = await sharp(imgBuffer);
-        this.transformSharpImgToFormat(processingImg, ext);
-        return processingImg.toBuffer();
-    }
-
-    protected getNameWithNewExt(imgFullPath: string, newExt: string) {
-        const imgName = parsePath(imgFullPath).name;
-        const newImgBaseName = imgName + `.${newExt}`;
-        const parentDirPath = dirname(imgFullPath);
-        return join(parentDirPath, newImgBaseName);
     }
 
     protected getImgResolution(size: IClientSize) {
@@ -448,18 +399,6 @@ export class OptimizeCmd extends Cmd {
         }
 
         return srcSet;
-    }
-
-    protected transformSharpImgToFormat(buffer: sharp.Sharp, format: ImgFormats) {
-        switch(format) {
-            case ImgFormats.webp:
-                buffer.webp();
-                break;
-
-            case ImgFormats.avif:
-                buffer.avif();
-                break;
-        }
     }
 
     protected addSrcSetToLogIfNeeded(srcSetInfo: ISrcSetLogInfo, imgOrigPath: string, selector: string) {

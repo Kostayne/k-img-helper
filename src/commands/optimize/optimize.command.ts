@@ -4,6 +4,9 @@ import { getResultCfg } from '../../utils/config/get_result_cfg.js';
 import { IUserConfig } from '../../types/cfg.type.js';
 import { ConfigStorage } from '../../utils/config/config_storage.js';
 import { OptimizeCmd } from './optimize.backend.js';
+import { ImgConverterLogger } from '../../modules/img_converter/img_converter.logger.js';
+import { OptimizeCmdLogger } from './optimize.logger.js';
+import { ImgConverter } from '../../modules/img_converter/img_convert.module.js';
 
 const command = new Command('optimize');
 
@@ -24,7 +27,16 @@ command.
             cliCfg,
         );
 
-        const cmd = new OptimizeCmd(cfg);
+        const imgConverterLogger = new ImgConverterLogger(cfg);
+        const imgConverter = new ImgConverter(cfg, imgConverterLogger);
+        const optimizeCmdLogger = new OptimizeCmdLogger(imgConverterLogger, cfg);
+
+        const cmd = new OptimizeCmd(
+            imgConverter,
+            optimizeCmdLogger,
+            cfg,
+        );
+
         cmd.exec();    
     });
 
