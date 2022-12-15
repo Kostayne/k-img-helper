@@ -1,23 +1,22 @@
 import sharp from 'sharp';
 import imageType from 'image-type';
 import puppeteer, { Browser, Page } from 'puppeteer';
+import { extname, join } from 'node:path';
 import { Cmd } from '../../shared/cmd.js';
 import { IRawImageInfo } from '../../types/img_raw_info.type.js';
 import { IClientSize } from '../../types/client_size.type.js';
 import { IImageBreakPointInfo } from '../../types/img_breakpoint_info.type.js';
 import { IFinalImageInfo } from '../../types/final_img.type.js';
 import { IResizedImage } from '../../types/img_resize_result.type.js';
-import { checkFileExistst } from '../../utils/check_file_exists.js';
-import { ImgFormats } from '../../types/img_formats.enum.js';
-import { readdir, readFile, writeFile } from 'node:fs/promises';
-import { extname, join, parse as parsePath } from 'node:path';
+import { readFile } from 'node:fs/promises';
 import { IDomImgInfo } from '../../types/dom_img_info.type.js';
 import { ISrcSetLogInfo } from './types/scrset_log_info.type.js';
-import { CliLogger } from '../../utils/loggers/cli_logger.js';
 import { OptimizeCmdLogger } from './optimize.logger.js';
 import { ImgConverter } from '../../modules/img_converter/img_convert.module.js';
 import { IResultConfig } from '../../types/cfg.type.js';
-import { transformSharpImgToFormat } from '../../utils/sharp_img_to_format.js';
+import { scanPublicDirContent } from '../../utils/scan_pulbic_dir.js';
+import { getImageRelativePathBySrc } from '../../utils/get_img_rel_path_by_src.js';
+import { ImgResizer } from '../../modules/img_resizer/img_resizer.module.js';
 
 export class OptimizeCmd extends Cmd {
     protected page: Page;
@@ -26,9 +25,14 @@ export class OptimizeCmd extends Cmd {
     protected publicDirContent: string[] = [];
     protected finalImgs: IFinalImageInfo[] = [];
 
+    protected convertedImgOriginalPaths: string[] = [];
+    protected resizedImgSelectors: string[] = [];
+
     constructor(
         // eslint-disable-next-line no-unused-vars
         protected imgConverter: ImgConverter,
+        // eslint-disable-next-line no-unused-vars
+        protected imgResizer: ImgResizer,
         // eslint-disable-next-line no-unused-vars
         protected logger: OptimizeCmdLogger,
         protected cfg: IResultConfig,
@@ -47,7 +51,11 @@ export class OptimizeCmd extends Cmd {
 
     async exec() {
         await this.setupBrowser();
-        await this.scanPublicDirContent();
+        const publicDirContent = await scanPublicDirContent(this.cfg);
+
+        if (publicDirContent === null) {
+            process.exit(1);
+        }
 
         for await (const breakPoint of this.cfg.breakPoints) {
             await this.page.setViewport({
@@ -78,32 +86,6 @@ export class OptimizeCmd extends Cmd {
         this.logger.logInfo();
 
         await this.browser.close();
-    }
-
-    protected getNameByClientSize(origName: string, size: IClientSize) {
-        const pathInfo = parsePath(origName);
-        const { dir, name, ext } = pathInfo;
-
-        const nameVal = join(dir, name);
-
-        return this.cfg.imgNameTemplate
-            .replace('$name', nameVal)
-            .replace('$width', size.clientWidth.toString())
-            .replace('$height', size.clientHeight.toString())
-            + ext;
-    }
-
-    protected async scanPublicDirContent() {
-        if (!this.cfg.publicDir) {
-            return;
-        }
-
-        try {
-            this.publicDirContent = await readdir(this.cfg.publicDir);
-        } catch(e) {
-            CliLogger.logError('Can\'t open specified public folder, does it exist?');
-            process.exit(1);
-        }
     }
 
     protected async getImgsInfo() {
@@ -146,19 +128,6 @@ export class OptimizeCmd extends Cmd {
         );
 
         return imgsInfo;
-    }
-
-    protected getImageRelativePath(imgSrc: string) {
-        const { urlImgPrefix, url } = this.cfg;
-
-        // relative to public dir
-        let relPath = imgSrc.replace(urlImgPrefix || url, '');
-
-        if (relPath[0] == '/') {
-            relPath = relPath.replace('/', '');
-        }
-
-        return relPath;
     }
 
     protected getImageFullPath(relPath: string) {
@@ -205,7 +174,7 @@ export class OptimizeCmd extends Cmd {
     }
 
     protected async processImg(imgInfo: IDomImgInfo) {
-        const relPath = this.getImageRelativePath(imgInfo.src);
+        const relPath = getImageRelativePathBySrc(imgInfo.src, this.cfg);
         const imgFullPath = this.getImageFullPath(relPath);
 
         let resultImgPath = imgFullPath;
@@ -214,33 +183,37 @@ export class OptimizeCmd extends Cmd {
         // needs for convertation & resize checks
         const sameSrcImgs = this.finalImgs.filter(img => img.src === imgInfo.src);
 
+        // CHECK TYPE MISMATCH BLOCK
         const { ext } = await imageType(sourceImgBuffer);
         await this.checkNameWithTypeMismatch(imgFullPath, ext);
 
+        // IMG CONVERTATION BLOCK
         const convertationRes = await this.imgConverter.convertImg(sourceImgBuffer, imgFullPath, ext);
+
+        // needs for srcset generation
+        if (convertationRes.converted) {
+            this.convertedImgOriginalPaths.push(imgFullPath);
+        }
 
         // destructuring object syntax for let
         ({ resultImgPath, sourceImgBuffer } = convertationRes);
 
+        // RESIZE BLOCK
         let resizes: IResizedImage[] = [];
 
         if (this.cfg.resize) {
-            const { resizes: imgResizes, resizesToLog } = await this.handleImgResizes(
-                imgInfo, 
-                resultImgPath, 
+            const resizeRes = await this.imgResizer.genereateImgResizes(
+                imgInfo,
+                resultImgPath,
                 sameSrcImgs,
-                sourceImgBuffer
+                sourceImgBuffer,
             );
 
-            resizes = imgResizes;
+            resizes = resizeRes.resizes;
 
-            // there is no point to log empty arr
-            if (resizesToLog.length > 0) {
-                this.logger.resizesToLog.push({
-                    imgPath: imgFullPath,
-                    resizes: resizesToLog,
-                    selector: imgInfo.selector,
-                });
+            // there is no point to do anything, if there is no resizes
+            if (resizes.length > 0) {
+                this.resizedImgSelectors.push(imgInfo.selector);
             }
         }
 
@@ -271,87 +244,7 @@ export class OptimizeCmd extends Cmd {
         }
     }
 
-    // TODO break this into individual fn
-    protected async handleImgResizes(
-        imgInfo: IDomImgInfo, 
-        imgFullPath: string, 
-        sameSrcImgs: IFinalImageInfo[],
-        sourceImgBuffer: Buffer,
-    ) {
-        const resizeResults: IResizedImage[] = [];
-        const resizesToLog: IResizedImage[] = [];
-
-        // iterate for all img sizes
-        for await (const breakPointInfo of imgInfo.breakPointsInfo) {
-            const { breakPoint, clientSize } = breakPointInfo;
-
-            // check for exact resize existance
-            const resizedImgPath = this.getNameByClientSize(imgFullPath, clientSize);            
-            let resizeAlreadyExists = await checkFileExistst(resizedImgPath);
-
-            const _curResize: IResizedImage = {
-                breakPoint,
-                clientSize,
-                imgPath: resizedImgPath,
-            };
-
-            const _pushResizeResult = () => {
-                resizeResults.push(_curResize);
-            };
-
-            const _pushResizeToLog = () => {
-                resizesToLog.push(_curResize);
-            };
-
-            if (resizeAlreadyExists) {
-                _pushResizeResult();
-                continue;
-            }
-
-            // img may be resized before with similar sizes
-            for (const sameSrcImg of sameSrcImgs) {
-                for (const r of sameSrcImg.resizes) {
-                    // size threshold | check
-                    const origRes = this.getImgResolution(clientSize);
-                    const similarRes = this.getImgResolution(r.clientSize);
-                    const resDiff = this.getImgSizeDiffInProcents(origRes, similarRes);
-
-                    // skip if diff is too high
-                    // TODO works only for different img tags on page should i do it with same tag?
-                    if (resDiff > this.cfg.resizeThreshold) {
-                        continue;
-                    }
-
-                    resizeAlreadyExists = true;
-                    break;
-                }
-
-                if (resizeAlreadyExists) {
-                    break;
-                }
-            }
-
-            const resizedBuffer = await this.resizeImg(
-                sourceImgBuffer, 
-                clientSize, 
-                this.cfg.imgFormat
-            );
-
-            await writeFile(resizedImgPath, resizedBuffer);
-            _pushResizeToLog();
-            _pushResizeResult();
-        }
-
-        return { resizes: resizeResults, resizesToLog };
-    }
-
-    protected async resizeImg(buffer: Buffer, size: IClientSize, format: ImgFormats) {
-        const sharpImg = sharp(buffer)
-            .resize(size.clientWidth, size.clientHeight);
-
-        transformSharpImgToFormat(sharpImg, format);
-        return sharpImg.toBuffer();
-    }
+    
 
     protected async readImageBuffer(imgFullPath: string) {
         try {
@@ -365,14 +258,6 @@ export class OptimizeCmd extends Cmd {
     protected getImgResolution(size: IClientSize) {
         const { clientHeight, clientWidth } = size;
         return clientHeight * clientWidth;
-    }
-
-    protected getImgSizeDiffInProcents(resOne: number, resTwo: number) {
-        const biggerRes = Math.max(resOne, resTwo);
-        const smallerRes = Math.min(resOne, resTwo);
-        const diff = biggerRes - smallerRes;
-        const procent = biggerRes / 100;
-        return diff / procent;
     }
 
     protected getImgSrcSetByResizes(imgResizes: IResizedImage[]) {
@@ -402,8 +287,8 @@ export class OptimizeCmd extends Cmd {
     }
 
     protected addSrcSetToLogIfNeeded(srcSetInfo: ISrcSetLogInfo, imgOrigPath: string, selector: string) {
-        const convertedImg = this.logger.convertedImgsToLog.find(info => {
-            return info.imgOriginalPath == imgOrigPath;
+        const convertedImg = this.convertedImgOriginalPaths.find(p => {
+            return p === imgOrigPath;
         });
 
         const resizedImg = this.logger.resizesToLog.find(r => {

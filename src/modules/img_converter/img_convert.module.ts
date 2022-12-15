@@ -7,6 +7,7 @@ import { dirname, join, parse as parsePath } from 'node:path';
 import { checkFileExistst } from '../../utils/check_file_exists.js';
 import { ImgConverterLogger } from './img_converter.logger.js';
 import { transformSharpImgToFormat } from '../../utils/sharp_img_to_format.js';
+import { IImageConvertResult } from './types/img_convert_result.type.js';
 
 export class ImgConverter {
     // eslint-disable-next-line no-unused-vars
@@ -19,12 +20,14 @@ export class ImgConverter {
     ) {
         let resultImgPath = imgFullPath;
         let resultBuffer = sourceImgBuffer;
+        let converted = false;
 
         const _getResult = () => {
             return {
+                converted,
                 resultImgPath,
                 sourceImgBuffer: resultBuffer,
-            };
+            } as IImageConvertResult;
         };
 
         if (this.cfg.convert && ext != this.cfg.imgFormat) {
@@ -42,6 +45,7 @@ export class ImgConverter {
 
             try {
                 await writeFile(resultImgPath, sourceImgBuffer);
+                converted = true;
 
                 this.logger.convertedImgsToLog.push({
                     format: this.cfg.imgFormat,
