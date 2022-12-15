@@ -1,5 +1,5 @@
-import { IConvertedImgInfo } from '../../commands/optimize/types/convertation_to_log.type.js';
 import { OptionalCliLogger } from '../../utils/loggers/optional_logger.js';
+import { IConvertedImgInfo } from './types/convertation_to_log.type.js';
 
 export class ImgConverterLogger extends OptionalCliLogger {
     public convertedImgsToLog: IConvertedImgInfo[] = [];
