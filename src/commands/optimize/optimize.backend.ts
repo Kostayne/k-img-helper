@@ -1,4 +1,3 @@
-import sharp from 'sharp';
 import imageType from 'image-type';
 import puppeteer, { Browser, Page } from 'puppeteer';
 import { extname, join } from 'node:path';

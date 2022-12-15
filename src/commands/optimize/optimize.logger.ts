@@ -12,9 +12,7 @@ export class OptimizeCmdLogger extends OptionalCliLogger {
     public resizesToLog: IResizesToLogInfo[] = [];
 
     constructor(
-        // eslint-disable-next-line no-unused-vars
         protected imgConverterLogger: ImgConverterLogger,
-        // eslint-disable-next-line no-unused-vars
         protected imgResizerLogger: ImgResizerLogger,
         protected cfg: IResultConfig,
     ) {

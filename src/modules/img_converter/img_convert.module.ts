@@ -10,7 +10,6 @@ import { transformSharpImgToFormat } from '../../utils/sharp_img_to_format.js';
 import { IImageConvertResult } from './types/img_convert_result.type.js';
 
 export class ImgConverter {
-    // eslint-disable-next-line no-unused-vars
     constructor(protected cfg: IResultConfig, protected logger: ImgConverterLogger) {}
 
     public async convertImg(

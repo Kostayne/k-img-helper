@@ -13,7 +13,6 @@ import { ImgResizerLogger } from './img_resizer.logger.js';
 
 export class ImgResizer {
     constructor(
-        // eslint-disable-next-line no-unused-vars
         protected cfg: IUserConfig,
         protected logger: ImgResizerLogger,
     ) {}
