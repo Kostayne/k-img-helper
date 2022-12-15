@@ -1,21 +1,23 @@
 import imageType from 'image-type';
 import puppeteer, { Browser, Page } from 'puppeteer';
 import { extname, join } from 'node:path';
-import { Cmd } from '../../shared/cmd.js';
-import { IRawImageInfo } from '../../types/img_raw_info.type.js';
-import { IClientSize } from '../../types/client_size.type.js';
-import { IImageBreakPointInfo } from '../../types/img_breakpoint_info.type.js';
-import { IFinalImageInfo } from '../../types/final_img.type.js';
-import { IResizedImage } from '../../types/img_resize_result.type.js';
 import { readFile } from 'node:fs/promises';
-import { IDomImgInfo } from '../../types/dom_img_info.type.js';
+// @own imports 
+import { Cmd } from '@shared/cmd.js';
 import { ISrcSetLogInfo } from './types/scrset_log_info.type.js';
 import { OptimizeCmdLogger } from './optimize.logger.js';
-import { ImgConverter } from '../../modules/img_converter/img_convert.module.js';
-import { IResultConfig } from '../../types/cfg.type.js';
-import { scanPublicDirContent } from '../../utils/scan_pulbic_dir.js';
-import { getImageRelativePathBySrc } from '../../utils/get_img_rel_path_by_src.js';
-import { ImgResizer } from '../../modules/img_resizer/img_resizer.module.js';
+import { ImgResizer } from '@modules/img_resizer/img_resizer.module.js';
+import { getImageRelativePathBySrc } from '@utils/get_img_rel_path_by_src.js';
+import { scanPublicDirContent } from '@utils/scan_pulbic_dir.js';
+import { ImgConverter } from '@modules/img_converter/img_convert.module.js';
+import { IRawImageInfo } from '@type/img_raw_info.type.js';
+import { IFinalImageInfo } from '@type/final_img.type.js';
+import { IResizedImage } from '@type/img_resize_result.type.js';
+import { IClientSize } from '@type/client_size.type.js';
+import { IDomImgInfo } from '@type/dom_img_info.type.js';
+import { IResultConfig } from '@type/cfg.type.js';
+import { IImageBreakPointInfo } from '@type/img_breakpoint_info.type.js';
+
 
 export class OptimizeCmd extends Cmd {
     protected page: Page;
