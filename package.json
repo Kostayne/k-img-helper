@@ -12,7 +12,9 @@
     "image-type": "^5.1.0",
     "jsonschema": "^1.4.1",
     "puppeteer": "^19.2.2",
-    "sharp": "^0.31.2"
+    "reflect-metadata": "^0.1.13",
+    "sharp": "^0.31.2",
+    "typedi": "^0.10.0"
   },
   "devDependencies": {
     "@types/jest": "^29.2.4",
@@ -34,6 +36,7 @@
     "build": "rm -rf dist && tsc",
     "old-dev": "npm run build && node dist/index.js",
     "dev": "ts-node ./src/index.ts",
-    "lint": "eslint --fix --ext .ts ."
+    "lint": "eslint --fix --ext .ts .",
+    "test": "jest"
   }
 }

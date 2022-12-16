@@ -9,6 +9,9 @@
         "noImplicitAny": true,
         "moduleResolution": "NodeNext",
         "target": "ESNext",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "esModuleInterop": true,
 
         "baseUrl": "./",
 
@@ -22,6 +25,9 @@
     },
 
     "ts-node": {
-        "esm": true
+        "esm": true,
+        "moduleTypes": {
+            "jest.config.ts": "cjs"
+        }
     }
 }

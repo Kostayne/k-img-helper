@@ -1,3 +1,4 @@
+import 'reflect-metadata';
 import { program } from 'commander';
 import { analyzeCommand } from './commands/analyze.command.js';
 import { authorsCommand } from './commands/authors.command.js';
