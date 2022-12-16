@@ -1,13 +1,15 @@
 import sharp from 'sharp';
-import { IResultConfig } from '../../types/cfg.type.js';
-import { ImgFormats } from '../../types/img_formats.enum.js';
 import { readFile, writeFile } from 'fs/promises';
-import { CliLogger } from '../../utils/loggers/cli_logger.js';
 import { dirname, join, parse as parsePath } from 'node:path';
-import { checkFileExistst } from '../../utils/check_file_exists.js';
+// @own imports
+import { IResultConfig } from '@type/cfg.type.js';
 import { ImgConverterLogger } from './img_converter.logger.js';
-import { transformSharpImgToFormat } from '../../utils/sharp_img_to_format.js';
 import { IImageConvertResult } from './types/img_convert_result.type.js';
+import { checkFileExistst } from '@utils/check_file_exists.js';
+import { ImgFormats } from '@type/img_formats.enum.js';
+import { transformSharpImgToFormat } from '@utils/sharp_img_to_format.js';
+import { CliLogger } from '@utils/loggers/cli_logger.js';
+
 
 export class ImgConverter {
     constructor(protected cfg: IResultConfig, protected logger: ImgConverterLogger) {}
