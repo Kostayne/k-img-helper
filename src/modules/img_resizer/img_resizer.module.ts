@@ -1,15 +1,16 @@
 import sharp from 'sharp';
 import { writeFile } from 'node:fs/promises';
-import { IClientSize } from '../../types/client_size.type.js';
-import { IDomImgInfo } from '../../types/dom_img_info.type.js';
-import { IFinalImageInfo } from '../../types/final_img.type.js';
-import { IResizedImage } from '../../types/img_resize_result.type.js';
 import { join, parse as parsePath } from 'node:path';
-import { checkFileExistst } from '../../utils/check_file_exists.js';
-import { IUserConfig } from '../../types/cfg.type.js';
-import { transformSharpImgToFormat } from '../../utils/sharp_img_to_format.js';
-import { ImgFormats } from '../../types/img_formats.enum.js';
+// own imports
 import { ImgResizerLogger } from './img_resizer.logger.js';
+import { IUserConfig } from '@type/cfg.type.js';
+import { IClientSize } from '@type/client_size.type.js';
+import { IDomImgInfo } from '@type/dom_img_info.type.js';
+import { IFinalImageInfo } from '@type/final_img.type.js';
+import { ImgFormats } from '@type/img_formats.enum.js';
+import { IResizedImage } from '@type/img_resize_result.type.js';
+import { checkFileExistst } from '@utils/check_file_exists.js';
+import { transformSharpImgToFormat } from '@utils/sharp_img_to_format.js';
 
 export class ImgResizer {
     constructor(
