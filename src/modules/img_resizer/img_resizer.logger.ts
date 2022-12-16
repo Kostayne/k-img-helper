@@ -1,5 +1,5 @@
-import { IResizesToLogInfo } from '../../commands/optimize/types/resizes_to_log.type.js';
-import { OptionalCliLogger } from '../../utils/loggers/optional_logger.js';
+import { IResizesToLogInfo } from '@commands/optimize/types/resizes_to_log.type.js';
+import { OptionalCliLogger } from '@utils/loggers/optional_logger.js';
 
 export class ImgResizerLogger extends OptionalCliLogger {    
     public resizesToLog: IResizesToLogInfo[] = [];
