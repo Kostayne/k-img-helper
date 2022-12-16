@@ -1,4 +1,4 @@
-import { OptionalCliLogger } from '../../utils/loggers/optional_logger.js';
+import { OptionalCliLogger } from '@utils/loggers/optional_logger.js';
 import { IConvertedImgInfo } from './types/convertation_to_log.type.js';
 
 export class ImgConverterLogger extends OptionalCliLogger {
