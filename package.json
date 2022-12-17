@@ -34,8 +34,9 @@
   },
   "scripts": {
     "build": "rm -rf dist && tsc",
-    "old-dev": "npm run build && node dist/index.js",
+    "build-run": "npm run build && node dist/index.js",
     "dev": "ts-node ./src/index.ts",
+    "clear": "ts-node dev_utils/clear_example.ts",
     "lint": "eslint --fix --ext .ts .",
     "test": "jest"
   }
