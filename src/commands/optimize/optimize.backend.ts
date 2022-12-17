@@ -1,7 +1,7 @@
 import imageType from 'image-type';
 import { Inject, Service } from 'typedi';
 import { extname, join } from 'node:path';
-import { readFile } from 'node:fs/promises';
+import { readFile, unlink } from 'node:fs/promises';
 // @own imports 
 import { Cmd } from '../../shared/cmd.js';
 import { ImgConverter } from '../../modules/img_converter/img_convert.module.js';
@@ -17,6 +17,7 @@ import { scanPublicDirContent } from '../../utils/scan_pulbic_dir.js';
 import { OptimizeCmdLogger } from './optimize.logger.js';
 import { ISrcSetLogInfo } from './types/scrset_log_info.type.js';
 import { ImgTagInfoCollector } from '../../modules/img_tag_info_collector/img_tag_info_collector.module.js';
+import { CliLogger } from '../../utils/loggers/cli_logger.js';
 
 @Service()
 export class OptimizeCmd extends Cmd {
@@ -47,9 +48,11 @@ export class OptimizeCmd extends Cmd {
         const imgTagInfoCollector = new ImgTagInfoCollector(this.cfg);
         const imgTagsInfo = await imgTagInfoCollector.collectImgTagsInfoFromBrowser();
 
-        for (const imgTagInfo of imgTagsInfo) {
+        for await (const imgTagInfo of imgTagsInfo) {
             await this.processImg(imgTagInfo);
         }
+
+        await this.deleteConvertedOrigImgs();
 
         this.logger.logInfo();
     }
@@ -180,6 +183,18 @@ export class OptimizeCmd extends Cmd {
 
         if (convertedImg || resizedImg) {
             this.logger.srcSetsToLog.push(srcSetInfo);
+        }
+    }
+
+    protected async deleteConvertedOrigImgs() {
+        for await (const imgPath of this.convertedImgOriginalPaths) {
+            try {
+                await unlink(imgPath);
+                this.logger.deletedConvertedImgPaths.push(imgPath);
+            } catch(e) {
+                CliLogger.logError(`Failed to delete converted img ${imgPath}`);
+                CliLogger.logError(e);
+            }
         }
     }
 }

@@ -12,6 +12,7 @@ export class OptimizeCmdLogger extends OptionalCliLogger {
     public srcSetsToLog: ISrcSetLogInfo[] = [];
     public typeMismatchesToLog: ITypeMismatchToLog[] = [];
     public resizesToLog: IResizesToLogInfo[] = [];
+    public deletedConvertedImgPaths: string[] = [];
 
     constructor(
         @Inject('cfg')
@@ -38,6 +39,12 @@ export class OptimizeCmdLogger extends OptionalCliLogger {
             this.logSrcSet(s.srcset, s.selector);
             this.logSpace();
         }); 
+
+        if (this.cfg.logDeleteConverted) {
+            for (const imgPath of this.deletedConvertedImgPaths) {
+                this.logDeleteAfterConvertation(imgPath);
+            }
+        }
     }
 
     protected logSrcSet(srcSet: string, selector: string) {
@@ -51,6 +58,10 @@ export class OptimizeCmdLogger extends OptionalCliLogger {
         if (this.cfg.logImgConvert) {
             this.logMsg(`Converted "${filePath}" to .${resFormat};`);
         }
+    }
+
+    protected logDeleteAfterConvertation(filePath: string) {
+        this.logMsg(`Deleted ${filePath} after convertation`);
     }
 
     public logImgSkip(imgPath: string) {

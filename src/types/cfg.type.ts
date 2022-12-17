@@ -31,6 +31,7 @@ export interface IUserConfig {
     logSkipped?: boolean;
     logImgConvert?: boolean;
     logResizes?: boolean;
+    logDeleteConverted?: boolean;
 }
 
 export type IResultConfig = Required<IUserConfig> & {
