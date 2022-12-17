@@ -1,18 +1,23 @@
 import sharp from 'sharp';
+import { Service, Inject } from 'typedi';
 import { readFile, writeFile } from 'fs/promises';
 import { dirname, join, parse as parsePath } from 'node:path';
 // @own imports
-import { IResultConfig } from '@type/cfg.type.js';
+import { IResultConfig } from '../../types/cfg.type.js';
+import { ImgFormats } from '../../types/img_formats.enum.js';
+import { checkFileExistst } from '../../utils/check_file_exists.js';
+import { CliLogger } from '../../utils/loggers/cli_logger.js';
+import { transformSharpImgToFormat } from '../../utils/sharp_img_to_format.js';
 import { ImgConverterLogger } from './img_converter.logger.js';
 import { IImageConvertResult } from './types/img_convert_result.type.js';
-import { checkFileExistst } from '@utils/check_file_exists.js';
-import { ImgFormats } from '@type/img_formats.enum.js';
-import { transformSharpImgToFormat } from '@utils/sharp_img_to_format.js';
-import { CliLogger } from '@utils/loggers/cli_logger.js';
 
-
+@Service()
 export class ImgConverter {
-    constructor(protected cfg: IResultConfig, protected logger: ImgConverterLogger) {}
+    constructor(
+        @Inject('cfg')
+        protected cfg: IResultConfig, 
+        protected logger: ImgConverterLogger
+    ) {}
 
     public async convertImg(
         sourceImgBuffer: Buffer,

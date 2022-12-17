@@ -1,9 +1,13 @@
+import { Inject } from 'typedi';
 import { IResultConfig } from '../../types/cfg.type.js';
 import { CliLogger } from './cli_logger.js';
 
 export class OptionalCliLogger {
     // eslint-disable-next-line no-unused-vars
-    constructor(protected cfg: IResultConfig) {}
+    constructor(
+        @Inject('cfg')
+        protected cfg: IResultConfig
+    ) {}
 
     public logSpace() {
         this.logMsg('');

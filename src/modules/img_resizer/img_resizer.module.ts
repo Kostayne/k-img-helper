@@ -1,19 +1,23 @@
 import sharp from 'sharp';
+import { Service, Inject } from 'typedi';
 import { writeFile } from 'node:fs/promises';
 import { join, parse as parsePath } from 'node:path';
 // own imports
 import { ImgResizerLogger } from './img_resizer.logger.js';
-import { IUserConfig } from '@type/cfg.type.js';
-import { IClientSize } from '@type/client_size.type.js';
-import { IDomImgInfo } from '@type/dom_img_info.type.js';
-import { IFinalImageInfo } from '@type/final_img.type.js';
-import { ImgFormats } from '@type/img_formats.enum.js';
-import { IResizedImage } from '@type/img_resize_result.type.js';
-import { checkFileExistst } from '@utils/check_file_exists.js';
-import { transformSharpImgToFormat } from '@utils/sharp_img_to_format.js';
+import { IUserConfig } from '../../types/cfg.type.js';
+import { IClientSize } from '../../types/client_size.type.js';
+import { IDomImgInfo } from '../../types/dom_img_info.type.js';
+import { IFinalImageInfo } from '../../types/final_img.type.js';
+import { ImgFormats } from '../../types/img_formats.enum.js';
+import { IResizedImage } from '../../types/img_resize_result.type.js';
+import { checkFileExistst } from '../../utils/check_file_exists.js';
+import { transformSharpImgToFormat } from '../../utils/sharp_img_to_format.js';
 
+
+@Service()
 export class ImgResizer {
     constructor(
+        @Inject('cfg')
         protected cfg: IUserConfig,
         protected logger: ImgResizerLogger,
     ) {}

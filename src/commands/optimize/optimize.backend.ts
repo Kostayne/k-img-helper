@@ -1,24 +1,26 @@
+import { Inject, Service } from 'typedi';
 import imageType from 'image-type';
 import puppeteer, { Browser, Page } from 'puppeteer';
 import { extname, join } from 'node:path';
 import { readFile } from 'node:fs/promises';
 // @own imports 
-import { Cmd } from '@shared/cmd.js';
-import { ISrcSetLogInfo } from './types/scrset_log_info.type.js';
+import { Cmd } from '../../shared/cmd.js';
+import { ImgConverter } from '../../modules/img_converter/img_convert.module.js';
+import { ImgResizer } from '../../modules/img_resizer/img_resizer.module.js';
+import { IResultConfig } from '../../types/cfg.type.js';
+import { IClientSize } from '../../types/client_size.type.js';
+import { IDomImgInfo } from '../../types/dom_img_info.type.js';
+import { IFinalImageInfo } from '../../types/final_img.type.js';
+import { IImageBreakPointInfo } from '../../types/img_breakpoint_info.type.js';
+import { IRawImageInfo } from '../../types/img_raw_info.type.js';
+import { IResizedImage } from '../../types/img_resize_result.type.js';
+import { getImageRelativePathBySrc } from '../../utils/get_img_rel_path_by_src.js';
+import { scanPublicDirContent } from '../../utils/scan_pulbic_dir.js';
 import { OptimizeCmdLogger } from './optimize.logger.js';
-import { ImgResizer } from '@modules/img_resizer/img_resizer.module.js';
-import { getImageRelativePathBySrc } from '@utils/get_img_rel_path_by_src.js';
-import { scanPublicDirContent } from '@utils/scan_pulbic_dir.js';
-import { ImgConverter } from '@modules/img_converter/img_convert.module.js';
-import { IRawImageInfo } from '@type/img_raw_info.type.js';
-import { IFinalImageInfo } from '@type/final_img.type.js';
-import { IResizedImage } from '@type/img_resize_result.type.js';
-import { IClientSize } from '@type/client_size.type.js';
-import { IDomImgInfo } from '@type/dom_img_info.type.js';
-import { IResultConfig } from '@type/cfg.type.js';
-import { IImageBreakPointInfo } from '@type/img_breakpoint_info.type.js';
+import { ISrcSetLogInfo } from './types/scrset_log_info.type.js';
 
 
+@Service()
 export class OptimizeCmd extends Cmd {
     protected page: Page;
     protected browser: Browser;
@@ -30,13 +32,11 @@ export class OptimizeCmd extends Cmd {
     protected resizedImgSelectors: string[] = [];
 
     constructor(
-        // eslint-disable-next-line no-unused-vars
-        protected imgConverter: ImgConverter,
-        // eslint-disable-next-line no-unused-vars
-        protected imgResizer: ImgResizer,
-        // eslint-disable-next-line no-unused-vars
-        protected logger: OptimizeCmdLogger,
+        @Inject('cfg')
         protected cfg: IResultConfig,
+        protected imgConverter: ImgConverter,
+        protected imgResizer: ImgResizer,
+        protected logger: OptimizeCmdLogger,
     ) {
         super(cfg);
     }

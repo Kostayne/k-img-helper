@@ -1,5 +1,5 @@
 import { Command } from 'commander';
-import { kostayneAscii } from '@utils/authors_ascii.js';
+import { kostayneAscii } from '../utils/authors_ascii.js';
 
 const command = new Command('authors');
 

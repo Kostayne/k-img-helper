@@ -12,16 +12,6 @@
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "esModuleInterop": true,
-
-        "baseUrl": "./",
-
-        "paths": {
-            "@type/*": ["src/types/*"],
-            "@shared/*": ["src/shared/*"],
-            "@utils/*": ["src/utils/*"],
-            "@modules/*": ["src/modules/*"],
-            "@commands/*": ["src/commands/*"]
-        }
     },
 
     "ts-node": {

@@ -1,14 +1,10 @@
 
+import { Container } from 'typedi';
 import { Command } from 'commander';
 import { getResultCfg } from '../../utils/config/get_result_cfg.js';
 import { IUserConfig } from '../../types/cfg.type.js';
 import { ConfigStorage } from '../../utils/config/config_storage.js';
 import { OptimizeCmd } from './optimize.backend.js';
-import { ImgConverterLogger } from '../../modules/img_converter/img_converter.logger.js';
-import { OptimizeCmdLogger } from './optimize.logger.js';
-import { ImgConverter } from '../../modules/img_converter/img_convert.module.js';
-import { ImgResizerLogger } from '../../modules/img_resizer/img_resizer.logger.js';
-import { ImgResizer } from '../../modules/img_resizer/img_resizer.module.js';
 
 const command = new Command('optimize');
 
@@ -29,22 +25,8 @@ command.
             cliCfg,
         );
 
-        // modules
-        const imgConverterLogger = new ImgConverterLogger(cfg);
-        const imgConverter = new ImgConverter(cfg, imgConverterLogger);
-
-        const imgResizerLogger = new ImgResizerLogger(cfg);
-        const imgResizer = new ImgResizer(cfg, imgResizerLogger);
-        
-        const optimizeCmdLogger = new OptimizeCmdLogger(imgConverterLogger, imgResizerLogger, cfg);
-
-        // cmd
-        const cmd = new OptimizeCmd(
-            imgConverter,
-            imgResizer,
-            optimizeCmdLogger,
-            cfg,
-        );
+        Container.set('cfg', cfg);
+        const cmd = Container.get(OptimizeCmd);
 
         cmd.exec();    
     });

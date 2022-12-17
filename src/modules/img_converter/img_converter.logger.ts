@@ -1,6 +1,8 @@
-import { OptionalCliLogger } from '@utils/loggers/optional_logger.js';
+import { Service } from 'typedi';
+import { OptionalCliLogger } from '../../utils/loggers/optional_logger.js';
 import { IConvertedImgInfo } from './types/convertation_to_log.type.js';
 
+@Service()
 export class ImgConverterLogger extends OptionalCliLogger {
     public convertedImgsToLog: IConvertedImgInfo[] = [];
 
