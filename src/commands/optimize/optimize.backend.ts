@@ -13,11 +13,11 @@ import { IFinalImageInfo } from '../../types/final_img.type.js';
 import { IRawImageInfo } from '../../types/img_raw_info.type.js';
 import { IResizedImage } from '../../types/img_resize_result.type.js';
 import { getImageRelativePathBySrc } from '../../utils/get_img_rel_path_by_src.js';
-import { scanPublicDirContent } from '../../utils/scan_pulbic_dir.js';
 import { OptimizeCmdLogger } from './optimize.logger.js';
 import { ISrcSetLogInfo } from './types/scrset_log_info.type.js';
 import { ImgTagInfoCollector } from '../../modules/img_tag_info_collector/img_tag_info_collector.module.js';
 import { CliLogger } from '../../utils/loggers/cli_logger.js';
+import { readPublicDirContentOrExit } from '../../utils/read_public_dir_content_or_exit.js';
 
 @Service()
 export class OptimizeCmd extends Cmd {
@@ -31,6 +31,7 @@ export class OptimizeCmd extends Cmd {
     constructor(
         @Inject('cfg')
         protected cfg: IResultConfig,
+        protected imgTagInfoCollector: ImgTagInfoCollector,
         protected imgConverter: ImgConverter,
         protected imgResizer: ImgResizer,
         protected logger: OptimizeCmdLogger,
@@ -39,14 +40,10 @@ export class OptimizeCmd extends Cmd {
     }
 
     async exec() {
-        const publicDirContent = await scanPublicDirContent(this.cfg);
+        // if public we can't read public dir, there is no point to do anything
+        await readPublicDirContentOrExit(this.cfg);
 
-        if (publicDirContent === null) {
-            process.exit(1);
-        }
-
-        const imgTagInfoCollector = new ImgTagInfoCollector(this.cfg);
-        const imgTagsInfo = await imgTagInfoCollector.collectImgTagsInfoFromBrowser();
+        const imgTagsInfo = await this.imgTagInfoCollector.collectImgTagsInfoFromBrowser();
 
         for await (const imgTagInfo of imgTagsInfo) {
             await this.processImg(imgTagInfo);

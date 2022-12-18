@@ -28,7 +28,7 @@ command.
         Container.set('cfg', cfg);
         const cmd = Container.get(OptimizeCmd);
 
-        cmd.exec();    
+        cmd.exec();
     });
 
 export const optimizeCommand = command;

@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { program } from 'commander';
-import { analyzeCommand } from './commands/analyze.command.js';
 import { authorsCommand } from './commands/authors.command.js';
+import { analyzeCommand } from './commands/analyze/analyze.command.js';
 import { optimizeCommand } from './commands/optimize/optimize.command.js';
 import { ImgHelperConfigLoader } from './utils/config/config_loader.js';
 import { ConfigStorage } from './utils/config/config_storage.js';
