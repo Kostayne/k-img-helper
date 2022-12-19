@@ -29,6 +29,7 @@ export class ImgResizer {
         sourceImgBuffer: Buffer,
     ) {
         const resizeResults: IResizedImage[] = [];
+        const skippedResizes: IResizedImage[] = [];
 
         // iterate for all img sizes
         for await (const breakPointInfo of imgInfo.breakPointsInfo) {
@@ -38,18 +39,15 @@ export class ImgResizer {
             const resizedImgPath = this.getNameByClientSize(imgFullPath, clientSize);            
             let resizeAlreadyExists = await checkFileExistst(resizedImgPath);
 
-            const _curResize: IResizedImage = {
+            const curResize: IResizedImage = {
                 breakPoint,
                 clientSize,
                 imgPath: resizedImgPath,
             };
 
-            const _pushResizeResult = () => {
-                resizeResults.push(_curResize);
-            };
-
             if (resizeAlreadyExists) {
-                _pushResizeResult();
+                resizeResults.push(curResize);
+                skippedResizes.push(curResize);
                 continue;
             }
 
@@ -83,7 +81,7 @@ export class ImgResizer {
             );
 
             await writeFile(resizedImgPath, resizedBuffer);
-            _pushResizeResult();
+            resizeResults.push(curResize);
         }
 
         // log if only img have at least one resize
@@ -95,7 +93,7 @@ export class ImgResizer {
             });
         }
 
-        return { resizes: resizeResults };
+        return { resizes: resizeResults, skippedResizes };
     }
 
     protected async resizeImg(buffer: Buffer, size: IClientSize, format: ImgFormats) {

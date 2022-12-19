@@ -1,6 +1,6 @@
 import { readdir, unlink } from 'node:fs/promises';
 import { join } from 'node:path';
-import { getDevPublicPath } from './get_dev_public_path';
+import { getDevPublicPath } from './get_dev_public_path.js';
 
 const fn = async () => {
     const publicPath = getDevPublicPath();
