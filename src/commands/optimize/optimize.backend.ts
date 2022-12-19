@@ -119,6 +119,7 @@ export class OptimizeCmdBackend extends CmdBackend {
         });
     }
 
+    // TODO make checkNameWithTypeMismatch shared
     protected async checkNameWithTypeMismatch(imgFullPath: string, ext: string) {
         if (this.cfg.detectTypeMismatch) {
             const extName = extname(imgFullPath);

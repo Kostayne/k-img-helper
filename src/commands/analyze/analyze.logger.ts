@@ -1,12 +1,13 @@
 import { Inject, Service } from 'typedi';
 import { IResultConfig } from '../../types/cfg.type.js';
+import { IDomImgInfo } from '../../types/dom_img_info.type.js';
 import { OptionalCliLogger } from '../../utils/loggers/optional_logger.js';
 
 @Service()
 export class AnalyzeCmdLogger {
-    public lackSrcImgSelectors: string[] = [];
-    public lackFixedSizeImgSelectors: string[] = [];
-    public lackAltImgSelectors: string[] = [];
+    public lackSrcImgs: IDomImgInfo[] = [];
+    public lackFixedSizeImgs: IDomImgInfo[] = [];
+    public lackAltImgs: IDomImgInfo[] = [];
 
     constructor(
         @Inject('cfg')
@@ -29,7 +30,7 @@ export class AnalyzeCmdLogger {
             return;
         }
 
-        this._logListLackOf(this.lackSrcImgSelectors, 'src attribute');
+        this._logListLackOf(this.lackSrcImgs, 'src attribute');
     }
 
     protected logLackFixedSizes() {
@@ -37,7 +38,7 @@ export class AnalyzeCmdLogger {
             return;
         }
 
-        this._logListLackOf(this.lackFixedSizeImgSelectors, 'fixed size');
+        this._logListLackOf(this.lackFixedSizeImgs, 'fixed size');
     }
 
     protected logLackAltAttrs() {
@@ -45,14 +46,18 @@ export class AnalyzeCmdLogger {
             return;
         }
 
-        this._logListLackOf(this.lackAltImgSelectors, 'alt attribute');
+        this._logListLackOf(this.lackAltImgs, 'alt attribute');
     }
 
-    protected _logListLackOf(imgSelectors: Array<string>, lackObj: string) {
-        imgSelectors.forEach(s => {
-            this.optionalLogger.logMsg(`Img with selector ${s} has no ${lackObj}`);
+    protected _logListLackOf(imgs: IDomImgInfo[], lackObj: string) {
+        imgs.forEach((img, i) => {
+            this.optionalLogger.logMsg(`Img with src ${img.src}, selector ${img.selector} has no ${lackObj}`);
+
+            if (i < imgs.length - 1) {
+                this.optionalLogger.logSpace();
+            }
         });
 
-        this.optionalLogger.logSpaceAfterArr(imgSelectors);
+        this.optionalLogger.logSpaceAfterArr(imgs);
     }
 }
