@@ -1,7 +1,7 @@
 import { IUserConfig } from '../types/cfg.type.js';
 
 export function getImageRelativePathBySrc(imgSrc: string, cfg: IUserConfig) {
-    const { urlImgPrefix, url } = cfg;
+    const { publicContentUrl: urlImgPrefix, url } = cfg;
 
     // relative to public dir
     let relPath = imgSrc.replace(urlImgPrefix || url, '');

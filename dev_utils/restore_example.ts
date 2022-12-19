@@ -1,6 +1,7 @@
-import { copyFile } from 'fs/promises';
 import { join, resolve } from 'path';
-import { getDevPublicPath } from './get_dev_public_path';
+import { copyFile } from 'fs/promises';
+
+import { getDevPublicPath } from './get_dev_public_path.js';
 
 const fn = async () => {
     const publicPath = getDevPublicPath();

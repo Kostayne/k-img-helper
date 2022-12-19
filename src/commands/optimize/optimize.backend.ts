@@ -1,9 +1,9 @@
-import imageType from 'image-type';
+import { fileTypeFromBuffer } from 'file-type';
 import { Inject, Service } from 'typedi';
 import { extname, join } from 'node:path';
 import { readFile, unlink } from 'node:fs/promises';
-// @own imports 
-import { Cmd } from '../../shared/cmd.js';
+// import own
+import { CmdBackend } from '../../shared/cmd_backend.js';
 import { ImgConverter } from '../../modules/img_converter/img_convert.module.js';
 import { ImgResizer } from '../../modules/img_resizer/img_resizer.module.js';
 import { IResultConfig } from '../../types/cfg.type.js';
@@ -20,7 +20,7 @@ import { CliLogger } from '../../utils/loggers/cli_logger.js';
 import { readPublicDirContentOrExit } from '../../utils/read_public_dir_content_or_exit.js';
 
 @Service()
-export class OptimizeCmd extends Cmd {
+export class OptimizeCmdBackend extends CmdBackend {
     protected rawImgsInfo: IRawImageInfo[] = [];
     protected publicDirContent: string[] = [];
     protected finalImgs: IFinalImageInfo[] = [];
@@ -69,7 +69,7 @@ export class OptimizeCmd extends Cmd {
         const sameSrcImgs = this.finalImgs.filter(img => img.src === imgInfo.src);
 
         // CHECK TYPE MISMATCH BLOCK
-        const { ext } = await imageType(sourceImgBuffer);
+        const { ext } = await fileTypeFromBuffer(sourceImgBuffer);
         await this.checkNameWithTypeMismatch(imgFullPath, ext);
 
         // IMG CONVERTATION BLOCK

@@ -9,7 +9,7 @@
   "dependencies": {
     "chalk": "4.1.2",
     "commander": "^9.4.1",
-    "image-type": "^5.1.0",
+    "file-type": "^18.0.0",
     "jsonschema": "^1.4.1",
     "puppeteer": "^19.2.2",
     "reflect-metadata": "^0.1.13",
@@ -37,6 +37,7 @@
     "build-run": "npm run build && node dist/index.js",
     "dev": "ts-node ./src/index.ts",
     "clear": "ts-node dev_utils/clear_example.ts",
+    "restore": "ts-node dev_utils/restore_example.ts",
     "lint": "eslint --fix --ext .ts .",
     "test": "jest"
   }

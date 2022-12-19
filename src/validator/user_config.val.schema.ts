@@ -7,7 +7,7 @@ export const userConfigValidationSchema = {
             type: 'string',
         },
 
-        urlImgPrefix: {
+        publicContentUrl: {
             type: 'string',
         },
 

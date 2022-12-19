@@ -1,6 +1,6 @@
 {
     "url": "file:///home/kostayne/Documents/projects/k-img-helper/example/index.html",
-    "urlImgPrefix": "file:///home/kostayne/Documents/projects/k-img-helper/example/",
+    "publicContentUrl": "file:///home/kostayne/Documents/projects/k-img-helper/example/",
     "publicDir": "./example",
 
     "deleteOriginal": true,

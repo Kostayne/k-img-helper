@@ -4,7 +4,7 @@ import { Command } from 'commander';
 import { getResultCfg } from '../../utils/config/get_result_cfg.js';
 import { IUserConfig } from '../../types/cfg.type.js';
 import { ConfigStorage } from '../../utils/config/config_storage.js';
-import { OptimizeCmd } from './optimize.backend.js';
+import { OptimizeCmdBackend } from './optimize.backend.js';
 
 const command = new Command('optimize');
 
@@ -26,7 +26,7 @@ command.
         );
 
         Container.set('cfg', cfg);
-        const cmd = Container.get(OptimizeCmd);
+        const cmd = Container.get(OptimizeCmdBackend);
 
         cmd.exec();
     });

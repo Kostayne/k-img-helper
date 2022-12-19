@@ -2,7 +2,7 @@ import { IResultConfig } from '../types/cfg.type.js';
 import { BaseConfigValidator } from '../utils/config/validators/base_config.validator.js';
 import { CliLogger } from '../utils/loggers/cli_logger.js';
 
-export class Cmd {
+export class CmdBackend {
     protected cfgValidator: BaseConfigValidator = new BaseConfigValidator();
 
     constructor(

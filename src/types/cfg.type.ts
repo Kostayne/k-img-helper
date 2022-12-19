@@ -3,7 +3,7 @@ import { ImgFormats } from './img_formats.enum.js';
 
 export interface IUserConfig {
     url: string;
-    urlImgPrefix?: string;
+    publicContentUrl?: string;
     publicDir?: string;
     
     deleteOriginal?: boolean;
