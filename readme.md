@@ -8,6 +8,9 @@ Optimize your images just with one command. It's highly configurable!
 
 ## Install
 ```
+# if occurs problem with install sharp (linux | macos)
+sudo chown -R $USER ~/.npm
+
 npm i -g k-img-helper # globally
 npm i -D k-img-helper # locally
 yarn add -D k-img-helper # locally
