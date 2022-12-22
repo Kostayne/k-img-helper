@@ -26,7 +26,7 @@ export class AnalyzeCmdLogger {
     }
 
     protected logLackSrcs() {
-        if (!this.cfg.detectSrcAttr) {
+        if (!this.cfg.detectNoSrcAttr) {
             return;
         }
 
@@ -34,7 +34,7 @@ export class AnalyzeCmdLogger {
     }
 
     protected logLackFixedSizes() {
-        if (!this.cfg.detectSizeAttr) {
+        if (!this.cfg.detectNoSizeAttr) {
             return;
         }
 
@@ -42,7 +42,7 @@ export class AnalyzeCmdLogger {
     }
 
     protected logLackAltAttrs() {
-        if (!this.cfg.detectAltAttr) {
+        if (!this.cfg.detectNoAltAttr) {
             return;
         }
 

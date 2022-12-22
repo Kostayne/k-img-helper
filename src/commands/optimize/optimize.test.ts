@@ -27,7 +27,7 @@ const cfg = getResultCfg({
     ],
 
     url: `file://${pagePath}`,
-    publicContentUrl: `file://${publicDirPath}`
+    publicUrl: `file://${publicDirPath}`
 } as IUserConfig);
 
 Container.set('cfg', cfg);

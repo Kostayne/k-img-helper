@@ -1,10 +1,5 @@
 {
     "url": "file:///home/kostayne/Documents/projects/k-img-helper/example/index.html",
     "publicContentUrl": "file:///home/kostayne/Documents/projects/k-img-helper/example/",
-    "publicDir": "./example",
-
-    "deleteOriginal": true,
-
-    "logResizes": true,
-    "resize": true
+    "publicDir": "./example"
 }

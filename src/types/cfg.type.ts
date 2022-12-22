@@ -3,16 +3,16 @@ import { ImgFormats } from './img_formats.enum.js';
 
 export interface IUserConfig {
     url: string;
-    publicContentUrl?: string;
+    publicUrl?: string;
     publicDir?: string;
     
     deleteOriginal?: boolean;
 
     resize?: boolean;
-    defaultBreakPoint?: IBreakPoint;
+    defaultViewport?: IBreakPoint;
     breakPoints?: IBreakPoint[];
     resizeThreshold?: number;
-    resizeDelay?: number;
+    breakpointSwitchDelay?: number;
     
     imgNameTemplate?: string;
 
@@ -20,10 +20,10 @@ export interface IUserConfig {
     imgFormat?: ImgFormats;
 
     // detect attrs
-    detectAltAttr?: boolean;
-    detectSrcSetAttr?: boolean;
-    detectSrcAttr?: boolean;
-    detectSizeAttr?: boolean;
+    detectNoAltAttr?: boolean;
+    detectNoSrcSetAttr?: boolean;
+    detectNoSrcAttr?: boolean;
+    detectNoSizeAttr?: boolean;
     detectTypeMismatch?: boolean;
 
     // logs
@@ -35,6 +35,6 @@ export interface IUserConfig {
 }
 
 export type IResultConfig = Required<IUserConfig> & {
-    defaultBreakPoint: Required<IBreakPoint>;
+    defaultViewport: Required<IBreakPoint>;
     breakPoints: Required<IBreakPoint>[];
 };

@@ -5,7 +5,7 @@ export const defaultCfg: IUserConfig = {
     url: '',
     publicDir: './public',
 
-    defaultBreakPoint: {
+    defaultViewport: {
         width: 1920,
         height: 1080,
     },
@@ -42,14 +42,14 @@ export const defaultCfg: IUserConfig = {
     imgFormat: ImgFormats.webp,
     resize: true,
     resizeThreshold: 5,
-    resizeDelay: 100,
+    breakpointSwitchDelay: 100,
 
     imgNameTemplate: '$name_w$width_h$height',
 
-    detectAltAttr: true,
-    detectSizeAttr: true,
-    detectSrcAttr: true,
-    detectSrcSetAttr: true,
+    detectNoAltAttr: true,
+    detectNoSizeAttr: true,
+    detectNoSrcAttr: true,
+    detectNoSrcSetAttr: true,
     detectTypeMismatch: true,
 
     log: true,

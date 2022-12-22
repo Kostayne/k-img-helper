@@ -9,10 +9,12 @@ const command = new Command('analyze');
 
 command.
     option('-u, --url <url>', 'url to your site')
-    .option('--detect-alt', 'detects no alt attr in imgs')
-    .option('--detect-src-set', 'detects no src-set attr in imgs')
-    .option('--detect-src', 'detects no src attr in imgs')
-    .option('--detect-size', 'detects no height | width attr in imgs')
+    .option('-p, --public-dir', 'path to public dir')
+    .option('--public-url <url>', 'url to public content')
+    .option('--detect-no-alt', 'detects no alt attr in imgs')
+    .option('--detect-no-src-set', 'detects no src-set attr in imgs')
+    .option('--detect-no-src', 'detects no src attr in imgs')
+    .option('--detect-no-size', 'detects no height | width attr in imgs')
 
     .action((cliCfg: IUserConfig) => {
         const cfg = getResultCfg(

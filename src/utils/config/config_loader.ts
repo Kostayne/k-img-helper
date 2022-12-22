@@ -5,7 +5,7 @@ import { CliLogger } from '../loggers/cli_logger.js';
 
 export class ImgHelperConfigLoader {
     static async loadFromRoot() {
-        return this.loadFrom('./.imghelper.config.json');
+        return this.loadFrom('./imghelper.config.json');
     }
 
     static async loadFrom(filePath: string) {

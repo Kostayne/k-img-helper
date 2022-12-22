@@ -153,6 +153,7 @@ export class OptimizeCmdBackend extends CmdBackend {
             return aRes - bRes;
         });
 
+        // TODO convert it to forEach cycle
         for (let i = 0; i < sortedResizes.length; i++) {
             const r = sortedResizes[i];
 

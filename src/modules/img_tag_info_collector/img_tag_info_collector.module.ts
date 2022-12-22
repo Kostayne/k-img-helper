@@ -27,7 +27,7 @@ export class ImgTagInfoCollector {
             });
 
             await new Promise(res => {
-                setTimeout(res, this.cfg.resizeDelay);
+                setTimeout(res, this.cfg.breakpointSwitchDelay);
             });
 
             const rawImgsInfo = await this.getRawImgsInfoFromPage();
@@ -48,7 +48,7 @@ export class ImgTagInfoCollector {
 
     protected async setupBrowser() {
         this.browser = await puppeteer.launch({
-            defaultViewport: this.cfg.defaultBreakPoint,
+            defaultViewport: this.cfg.defaultViewport,
         });
 
         this.page = await this.browser.newPage();
@@ -80,6 +80,7 @@ export class ImgTagInfoCollector {
                         return generateQuerySelector(el.parentNode as Element) + ' > ' + str;
                     };
 
+                    // TODO refactor it with object destructor
                     return {
                         alt: img.alt,
                         src: img.src,

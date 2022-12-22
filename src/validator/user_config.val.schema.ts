@@ -19,7 +19,7 @@ export const userConfigValidationSchema = {
             type: 'boolean',
         },
 
-        defaultBreakPoint: {
+        defaultViewport: {
             $ref: 'breakPoint',
         },
 
@@ -35,7 +35,7 @@ export const userConfigValidationSchema = {
             type: 'number',
         },
 
-        resizeDelay: {
+        breakpointSwitchDelay: {
             type: 'number',
         },
 
@@ -48,19 +48,19 @@ export const userConfigValidationSchema = {
             
         },
 
-        detectAltAttr: {
+        detectNoAltAttr: {
             type: 'boolean',
         },
 
-        detectSrcSetAttr: {
+        detectNoSrcSetAttr: {
             type: 'boolean',
         },
 
-        detectSrcAttr: {
+        detectNoSrcAttr: {
             type: 'boolean',
         },
 
-        detectSizeAttr: {
+        detectNoSizeAttr: {
             type: 'boolean',
         },
 

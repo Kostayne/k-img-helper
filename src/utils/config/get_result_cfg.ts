@@ -10,8 +10,8 @@ export function getResultCfg(fileCfg: IUserConfig, cliCfg: IUserConfig = {} as I
 
     mixedCfg.breakPoints ??= [];
     mixedCfg.breakPoints.forEach(b => {
-        b.height ??= defaultCfg.defaultBreakPoint.height;
-        b.width ??= defaultCfg.defaultBreakPoint.width;
+        b.height ??= defaultCfg.defaultViewport.height;
+        b.width ??= defaultCfg.defaultViewport.width;
     });
 
     return mixedCfg as IResultConfig;
