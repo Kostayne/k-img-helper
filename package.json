@@ -1,12 +1,22 @@
 {
   "name": "k-img-helper",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "dist/index.js",
   "author": "kostayne",
   "license": "MIT",
   "private": false,
   "type": "module",
-  "keywords": ["cli", "img", "image", "optimize", "optimization", "convert", "resize", "webp", "web"],
+  "keywords": [
+    "cli",
+    "img",
+    "image",
+    "optimize",
+    "optimization",
+    "convert",
+    "resize",
+    "webp",
+    "web"
+  ],
   "dependencies": {
     "chalk": "4.1.2",
     "commander": "^9.4.1",

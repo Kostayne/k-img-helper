@@ -1,3 +1,4 @@
+#!/usr/bin/node
 import 'reflect-metadata';
 import { program } from 'commander';
 import { authorsCommand } from './commands/authors.command.js';
