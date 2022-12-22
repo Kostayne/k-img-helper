@@ -8,6 +8,7 @@ import { ImgHelperConfigLoader } from './utils/config/config_loader.js';
 import { ConfigStorage } from './utils/config/config_storage.js';
 
 const asyncWrapper = async () => {
+    // TODO load only if needed
     const cfg = await ImgHelperConfigLoader.loadFromRoot();
     ConfigStorage.cfg = cfg;
 

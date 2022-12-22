@@ -4,7 +4,7 @@ Optimize your images just with one command. It's highly configurable!
 <!-- shileds -->
 ![npm](https://img.shields.io/npm/v/k-img-helper)
 ![npm](https://img.shields.io/npm/dm/k-img-helper)
-![NPM](https://img.shields.io/npm/l/k-img-helper)
+![npm](https://img.shields.io/npm/l/k-img-helper)
 
 ## Install
 ```
@@ -25,8 +25,8 @@ Create your config called imghelper.config.json in root of your project.
 ``` json
 {
     "url": "http://127.0.0.1:3000",
-    "publicContentUrl": "http://127.0.0.1:3000/static", // [optional]
-    "publicDir": "./public", // [optional]
+    "publicContentUrl": "http://127.0.0.1:3000/static", 
+    "publicDir": "./public",
 }
 ```
 
