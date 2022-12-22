@@ -5,6 +5,7 @@ import { copyFile, readdir, readFile, unlink } from 'fs/promises';
 import { ImgConverter } from './img_convert.module.js';
 import { getResultCfg } from '../../utils/config/get_result_cfg.js';
 import { IUserConfig } from '../../types/cfg.type.js';
+import { ImgFormats } from '../../types/img_formats.enum.js';
 
 // shared
 const cfg = getResultCfg({
@@ -90,7 +91,17 @@ describe('img converter module', () => {
         expect(playgroundContent.includes('rnd_art.webp'));
     });
 
+    it('converts images to avif', async () => {
+        cfg.imgFormat = ImgFormats.avif;
+        const convertRes = await convertImg(playgroundPath, 'bebop.jpg');
+        expect(convertRes.converted).toBe(true);
+
+        const playgroundContent = await readdir(playgroundPath);         
+        expect(playgroundContent.includes('bebop.avif'));
+    });
+
     it('skips already converted files', async () => {
+        cfg.imgFormat = ImgFormats.webp;
         const convertRes = await convertImg(skipPlaygroundPath, 'hunter.jpg');
         expect(convertRes.converted).toBe(false);
     });

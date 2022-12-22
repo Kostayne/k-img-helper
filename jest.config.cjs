@@ -8,6 +8,10 @@ module.exports = {
     '(.*)\\.js$': '$1',
   },
 
+  modulePathIgnorePatterns: [
+    '<rootDir>/dist'
+  ],
+
   transformIgnorePatterns: [
     'node_modules/',
     'node_modules/(?!(file-type)/)',

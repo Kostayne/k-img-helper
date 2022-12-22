@@ -1,6 +1,6 @@
-import { fileTypeFromBuffer } from 'file-type';
 import { Inject, Service } from 'typedi';
 import { extname, join } from 'node:path';
+import { fileTypeFromBuffer } from 'file-type';
 import { readFile, unlink } from 'node:fs/promises';
 // import own
 import { CmdBackend } from '../../shared/cmd_backend.js';

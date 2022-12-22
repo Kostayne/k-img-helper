@@ -3,12 +3,12 @@ import { readdir, readFile, unlink } from 'fs/promises';
 import { join, resolve } from 'path';
 import { Container } from 'typedi';
 
-import { IDomImgInfo } from '../../../types/dom_img_info.type.js';
-import { IUserConfig } from '../../../types/cfg.type.js';
-import { getResultCfg } from '../../../utils/config/get_result_cfg.js';
-import { ImgResizer } from '../img_resizer.module.js';
-import { IFinalImageInfo } from '../../../types/final_img.type.js';
-import { IResizedImage } from '../../../types/img_resize_result.type.js';
+import { IDomImgInfo } from '../../types/dom_img_info.type.js';
+import { IUserConfig } from '../../types/cfg.type.js';
+import { getResultCfg } from '../../utils/config/get_result_cfg.js';
+import { ImgResizer } from './img_resizer.module.js';
+import { IFinalImageInfo } from '../../types/final_img.type.js';
+import { IResizedImage } from '../../types/img_resize_result.type.js';
 
 const playgroundPath = resolve('./src/modules/img_resizer/test/resize_playground');
 const origImgPath = join(playgroundPath, 'bebop.webp');
