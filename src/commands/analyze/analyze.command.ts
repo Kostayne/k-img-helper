@@ -1,7 +1,7 @@
 import { Command } from 'commander';
 import { Container } from 'typedi';
 import { IUserConfig } from '../../types/cfg.type.js';
-import { ConfigStorage } from '../../utils/config/config_storage.js';
+import { ImgHelperConfigLoader } from '../../utils/config/config_loader.js';
 import { getResultCfg } from '../../utils/config/get_result_cfg.js';
 import { AnalyzeCmdBackend } from './analyze.backend.js';
 
@@ -16,16 +16,18 @@ command.
     .option('--detect-no-src', 'detects no src attr in imgs')
     .option('--detect-no-size', 'detects no height | width attr in imgs')
 
-    .action((cliCfg: IUserConfig) => {
+    .action(async (cliCfg: IUserConfig) => {
+        const rootCfg = await ImgHelperConfigLoader.loadFromRoot();
+
         const cfg = getResultCfg(
-            ConfigStorage.cfg,
+            rootCfg,
             cliCfg,
         );
 
         Container.set('cfg', cfg);
         const backend = Container.get(AnalyzeCmdBackend);
 
-        backend.exec();
+        await backend.exec();
     });
 
 export const analyzeCommand = command;

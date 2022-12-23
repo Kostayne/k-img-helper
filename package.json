@@ -1,6 +1,6 @@
 {
   "name": "k-img-helper",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "main": "dist/index.js",
   "author": "kostayne",
   "license": "MIT",
@@ -54,6 +54,8 @@
     "clear": "ts-node dev_utils/clear_example.ts",
     "restore": "ts-node dev_utils/restore_example.ts",
     "lint": "eslint --fix --ext .ts .",
-    "test": "jest"
+    "test": "jest",
+    "bump": "npm version --no-git-tag-version",
+    "prepublishOnly": "npm run test && npm run build"
   }
 }

@@ -1,7 +1,6 @@
 import { promises as fsPromises } from 'fs';
 import { IUserConfig } from '../../types/cfg.type.js';
 import { loadJsonFromFile } from '../load_json_from_file.js';
-import { CliLogger } from '../loggers/cli_logger.js';
 
 export class ImgHelperConfigLoader {
     static async loadFromRoot() {
@@ -12,9 +11,7 @@ export class ImgHelperConfigLoader {
         try {
             await fsPromises.stat(filePath);
         } catch(err) {
-            CliLogger.logError('Can\'t open config? Does it exist?');
-
-            return;
+            return null;
         }
 
         const cfg = await loadJsonFromFile(filePath);

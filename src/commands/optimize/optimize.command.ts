@@ -3,8 +3,8 @@ import { Container } from 'typedi';
 import { Command } from 'commander';
 import { getResultCfg } from '../../utils/config/get_result_cfg.js';
 import { IUserConfig } from '../../types/cfg.type.js';
-import { ConfigStorage } from '../../utils/config/config_storage.js';
 import { OptimizeCmdBackend } from './optimize.backend.js';
+import { ImgHelperConfigLoader } from '../../utils/config/config_loader.js';
 
 const command = new Command('optimize');
 
@@ -21,9 +21,11 @@ command.
     .option('--log-deleted', 'log deleted images after convertation')
     .option('-d, --breakpoint-switch-delay', 'how many to wait for js event handle after browser resize')
     .option('--img-name-template <string>', 'resized img name template, replaces $width & $height with values')
-    .action((cliCfg: IUserConfig) => {
+    .action(async (cliCfg: IUserConfig) => {
+        const rootCfg = await ImgHelperConfigLoader.loadFromRoot();
+
         const cfg = getResultCfg(
-            ConfigStorage.cfg,
+            rootCfg,
             cliCfg,
         );
 
