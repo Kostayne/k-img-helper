@@ -31,8 +31,7 @@ command.
 
         Container.set('cfg', cfg);
         const cmd = Container.get(OptimizeCmdBackend);
-
-        cmd.exec();
+        await cmd.exec();
     });
 
 export const optimizeCommand = command;

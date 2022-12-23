@@ -5,10 +5,10 @@ export function getImageRelativePathBySrc(imgSrc: string, cfg: IUserConfig) {
 
     // relative to public dir
     let relPath = imgSrc.replace(publicUrl || url, '');
-
+    
     if (relPath[0] == '/') {
         relPath = relPath.replace('/', '');
     }
-
+    
     return relPath;
 }
