@@ -153,10 +153,7 @@ export class OptimizeCmdBackend extends CmdBackend {
             return aRes - bRes;
         });
 
-        // TODO convert it to forEach cycle
-        for (let i = 0; i < sortedResizes.length; i++) {
-            const r = sortedResizes[i];
-
+        sortedResizes.forEach((r, i) => {
             if (i > 0) {
                 srcSet += ' ';
             }
@@ -166,7 +163,7 @@ export class OptimizeCmdBackend extends CmdBackend {
             if (i != sortedResizes.length - 1) {
                 srcSet += ',';
             }
-        }
+        });
 
         return srcSet;
     }
