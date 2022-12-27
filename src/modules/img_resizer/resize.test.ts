@@ -12,6 +12,7 @@ import { IResizedImage } from '../../types/img_resize_result.type.js';
 
 const playgroundPath = resolve('./src/modules/img_resizer/test/resize_playground');
 const origImgPath = join(playgroundPath, 'bebop.webp');
+const imgRelativePath = 'bebop.webp';
 
 const cfg = getResultCfg({} as IUserConfig);
 Container.set('cfg', cfg);
@@ -61,6 +62,7 @@ describe('img resizer module', () => {
         const resizeResults = await resizer.genereateImgResizes(
             imgInfo,
             origImgPath,
+            imgRelativePath,
             sameSrcImgs,
             imgBuff,
         );
