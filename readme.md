@@ -80,12 +80,12 @@ export interface IUserConfig {
     detectNoSizeAttr?: boolean;
     detectTypeMismatch?: boolean;
 
-    // [true]
-    log?: boolean;
-    logSkipped?: boolean;
-    logImgConvert?: boolean;
-    logResizes?: boolean;
-    logDeleteConverted?: boolean;
+    log?: boolean; // [true]
+    logSkipped?: boolean; // [true]
+    logImgConvert?: boolean; // [true]
+    logResizes?: boolean; // [true]
+    logResizesDetailsJson?: boolean; // [false]
+    logDeleteConverted?: boolean; // [true]
 }
 ```
 

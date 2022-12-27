@@ -1,7 +1,6 @@
 import { Inject, Service } from 'typedi';
-import { extname, join } from 'node:path';
 import { fileTypeFromBuffer } from 'file-type';
-import { readFile, unlink } from 'node:fs/promises';
+import { unlink } from 'node:fs/promises';
 // import own
 import { CmdBackend } from '../../shared/cmd_backend.js';
 import { ImgConverter } from '../../modules/img_converter/img_convert.module.js';
@@ -18,6 +17,9 @@ import { ISrcSetLogInfo } from './types/scrset_log_info.type.js';
 import { ImgTagInfoCollector } from '../../modules/img_tag_info_collector/img_tag_info_collector.module.js';
 import { CliLogger } from '../../utils/loggers/cli_logger.js';
 import { readPublicDirContentOrExit } from '../../utils/read_public_dir_content_or_exit.js';
+import { checkNameWithTypeMismatch } from '../../utils/check_name_with_type_mismatch.js';
+import { readImageBuffer } from '../../utils/read_img_buffer.js';
+import { getImageFullPath } from '../../utils/get_img_full_path.js';
 
 @Service()
 export class OptimizeCmdBackend extends CmdBackend {
@@ -26,7 +28,6 @@ export class OptimizeCmdBackend extends CmdBackend {
     protected finalImgs: IFinalImageInfo[] = [];
 
     protected convertedImgOriginalPaths: string[] = [];
-    protected resizedImgSelectors: string[] = [];
 
     constructor(
         @Inject('cfg')
@@ -49,28 +50,33 @@ export class OptimizeCmdBackend extends CmdBackend {
             await this.processImg(imgTagInfo);
         }
 
-        await this.deleteConvertedOrigImgs();
+        if (this.cfg.deleteOriginal) {
+            await this.deleteConvertedOrigImgs();
+        }
 
         this.logger.logInfo();
     }
 
-    protected getImageFullPath(relPath: string) {
-        return join(this.cfg.publicDir, relPath);
-    }
-
     protected async processImg(imgInfo: IDomImgInfo) {
         const relPath = getImageRelativePathBySrc(imgInfo.src, this.cfg);
-        const imgFullPath = this.getImageFullPath(relPath);
+        const imgFullPath = getImageFullPath(this.cfg, relPath);
 
         let resultImgPath = imgFullPath;
-        let sourceImgBuffer = await this.readImageBuffer(imgFullPath);
+        let sourceImgBuffer = await readImageBuffer(imgFullPath);
+
+        if (!sourceImgBuffer) {
+            this.logger.logImgSkip(imgFullPath);
+        }
 
         // needs for convertation & resize checks
         const sameSrcImgs = this.finalImgs.filter(img => img.src === imgInfo.src);
 
         // CHECK TYPE MISMATCH BLOCK
         const { ext } = await fileTypeFromBuffer(sourceImgBuffer);
-        await this.checkNameWithTypeMismatch(imgFullPath, ext);
+
+        if (this.cfg.detectTypeMismatch) {
+            checkNameWithTypeMismatch(imgFullPath, ext);
+        }
 
         // IMG CONVERTATION BLOCK
         const convertationRes = await this.imgConverter.convertImg(sourceImgBuffer, imgFullPath, ext);
@@ -90,16 +96,12 @@ export class OptimizeCmdBackend extends CmdBackend {
             const resizeRes = await this.imgResizer.genereateImgResizes(
                 imgInfo,
                 resultImgPath,
+                relPath,
                 sameSrcImgs,
                 sourceImgBuffer,
             );
 
             resizes = resizeRes.resizes;
-
-            // there is no point to do anything, if there is no resizes
-            if (resizes.length > 0) {
-                this.resizedImgSelectors.push(imgInfo.selector);
-            }
         }
 
         const srcSet = this.getImgSrcSetByResizes(resizes);
@@ -117,26 +119,6 @@ export class OptimizeCmdBackend extends CmdBackend {
             resizes,
             srcSet,
         });
-    }
-
-    // TODO make checkNameWithTypeMismatch shared
-    protected async checkNameWithTypeMismatch(imgFullPath: string, ext: string) {
-        if (this.cfg.detectTypeMismatch) {
-            const extName = extname(imgFullPath);
-
-            if (ext !== extName.replace('.', '')) {
-                this.logger.logWarning(`Image ${imgFullPath} should have .${ext} extention!`);
-            }
-        }
-    }
-
-    protected async readImageBuffer(imgFullPath: string) {
-        try {
-            return readFile(imgFullPath);
-        } catch(e) {
-            this.logger.logImgSkip(imgFullPath);
-            return undefined;
-        }
     }
 
     protected getImgResolution(size: IClientSize) {

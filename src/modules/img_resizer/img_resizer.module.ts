@@ -25,6 +25,7 @@ export class ImgResizer {
     public async genereateImgResizes(
         imgInfo: IDomImgInfo, 
         imgFullPath: string, 
+        imgRelativePath: string, 
         sameSrcImgs: IFinalImageInfo[],
         sourceImgBuffer: Buffer,
     ) {
@@ -88,7 +89,7 @@ export class ImgResizer {
         if (resizeResults.length > 0) {
             this.logger.resizesToLog.push({
                 resizes: resizeResults,
-                imgPath: imgFullPath,
+                src: imgRelativePath,
                 selector: imgInfo.selector,
             });
         }

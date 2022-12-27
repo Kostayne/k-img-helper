@@ -18,15 +18,17 @@ export class ImgResizerLogger extends OptionalCliLogger {
         }
     }
 
-    protected logImgRelatedResizesArr({ imgPath, resizes, selector }: IResizesToLogInfo) {
+    protected logImgRelatedResizesArr({ src, resizes, selector }: IResizesToLogInfo) {
         if (!this.cfg.logResizes) { 
             return;
         }
 
-        this.logMsg(`Created resizes for "${imgPath}" with selector "${selector}":`);
+        this.logMsg(`Created resizes for "${src}" with selector "${selector}"`);
 
-        this.logMsg(
-            JSON.stringify(resizes, null, '\t')
-        );
+        if (this.cfg.logResizesDetailsJson) {
+            this.logMsg(
+                JSON.stringify(resizes, null, '\t')
+            );
+        }
     }
 }

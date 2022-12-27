@@ -56,5 +56,6 @@ export const defaultCfg: IUserConfig = {
     logSkipped: true,
     logImgConvert: true,
     logResizes: true,
+    logResizesDetailsJson: false,
     logDeleteConverted: true,
 };

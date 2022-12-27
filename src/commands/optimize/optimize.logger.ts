@@ -5,12 +5,10 @@ import { IResultConfig } from '../../types/cfg.type.js';
 import { OptionalCliLogger } from '../../utils/loggers/optional_logger.js';
 import { IResizesToLogInfo } from './types/resizes_to_log.type.js';
 import { ISrcSetLogInfo } from './types/scrset_log_info.type.js';
-import { ITypeMismatchToLog } from './types/type_mismatch_to_log.type.js';
 
 @Service()
 export class OptimizeCmdLogger extends OptionalCliLogger {
     public srcSetsToLog: ISrcSetLogInfo[] = [];
-    public typeMismatchesToLog: ITypeMismatchToLog[] = [];
     public resizesToLog: IResizesToLogInfo[] = [];
     public deletedConvertedImgPaths: string[] = [];
 

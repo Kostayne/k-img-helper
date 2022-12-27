@@ -31,6 +31,7 @@ export interface IUserConfig {
     logSkipped?: boolean;
     logImgConvert?: boolean;
     logResizes?: boolean;
+    logResizesDetailsJson?: boolean;
     logDeleteConverted?: boolean;
 }
 
