@@ -18,7 +18,7 @@ command.
     .option('-r, --resize', 'enables img resize')
     .option('--log-skipped', 'log warnings for skipped images')
     .option('--log-resizes', 'log info about created img resizes')
-    .option('--log-resize-details-json', 'log full resizes info (many lines of json)')
+    .option('--log-resizes-details-json', 'log full resizes info (many lines of json)')
     .option('--log-deleted', 'log deleted images after convertation')
     .option('-d, --breakpoint-switch-delay', 'how many to wait for js event handle after browser resize')
     .option('--img-name-template <string>', 'resized img name template, replaces $width & $height with values')

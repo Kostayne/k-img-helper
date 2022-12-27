@@ -83,6 +83,10 @@ export const userConfigValidationSchema = {
         logResizes: {
             type: 'boolean',
         },
+
+        logResizesDetailsJson: {
+            type: 'boolean',
+        },
     },
 
     required: ['url'],

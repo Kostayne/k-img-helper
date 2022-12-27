@@ -9,7 +9,7 @@ const asyncWrapper = async () => {
     program
         .name('k-img-helper')
         .description('CLI to optimize your images')
-        .version('1.0.8')
+        .version('1.0.9')
         .option('-l, --log', 'enable / disable info log to stdout')
         .addCommand(analyzeCommand)
         .addCommand(optimizeCommand)
