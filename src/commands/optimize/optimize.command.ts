@@ -1,4 +1,3 @@
-
 import { Container } from 'typedi';
 import { Command } from 'commander';
 import { getResultCfg } from '../../utils/config/get_result_cfg.js';

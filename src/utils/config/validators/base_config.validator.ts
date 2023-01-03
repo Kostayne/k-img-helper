@@ -1,5 +1,6 @@
-import { IUserConfig } from '../../../types/cfg.type.js';
 import { Validator } from 'jsonschema';
+// import own
+import { IUserConfig } from '../../../types/cfg.type.js';
 import { breakPointValidationSchema } from '../../../validator/breakpoint.val.schema.js';
 import { userConfigValidationSchema } from '../../../validator/user_config.val.schema.js';
 

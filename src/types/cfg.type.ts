@@ -17,6 +17,7 @@ export interface IUserConfig {
     imgNameTemplate?: string;
 
     convert?: boolean;
+    convertRecursive?: boolean;
     imgFormat?: ImgFormats;
 
     // detect attrs

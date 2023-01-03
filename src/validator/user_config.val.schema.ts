@@ -43,6 +43,10 @@ export const userConfigValidationSchema = {
             type: 'boolean',
         },
 
+        convertRecursive: {
+            type: 'boolean',
+        },
+
         imgFormat: {
             type: 'string',
             

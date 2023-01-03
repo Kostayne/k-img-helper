@@ -59,6 +59,7 @@ export class ImgConverter {
                 });
             } catch(e) {
                 CliLogger.logError(`Could not save converted image "${resultImgPath}"`);
+                this.logger.skippedImgPaths.push(imgFullPath);
             }
         }
 

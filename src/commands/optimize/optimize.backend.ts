@@ -23,11 +23,14 @@ import { getImageFullPath } from '../../utils/get_img_full_path.js';
 
 @Service()
 export class OptimizeCmdBackend extends CmdBackend {
-    protected rawImgsInfo: IRawImageInfo[] = [];
     protected publicDirContent: string[] = [];
-    protected finalImgs: IFinalImageInfo[] = [];
 
+    protected deletedImgPaths: string[] = [];
+    protected resizedImgSelectors: string[] = [];
     protected convertedImgOriginalPaths: string[] = [];
+
+    protected rawImgsInfo: IRawImageInfo[] = [];
+    protected finalImgs: IFinalImageInfo[] = [];
 
     constructor(
         @Inject('cfg')
@@ -65,7 +68,7 @@ export class OptimizeCmdBackend extends CmdBackend {
         let sourceImgBuffer = await readImageBuffer(imgFullPath);
 
         if (!sourceImgBuffer) {
-            this.logger.logImgSkip(imgFullPath);
+            this.logger.addSkippedImgPathToLog(imgFullPath);
         }
 
         // needs for convertation & resize checks
@@ -102,6 +105,11 @@ export class OptimizeCmdBackend extends CmdBackend {
             );
 
             resizes = resizeRes.resizes;
+
+            // adding it to check the need of generate new srcset attr
+            if (resizes.length > 0) {
+                this.resizedImgSelectors.push(imgInfo.selector);
+            }
         }
 
         const srcSet = this.getImgSrcSetByResizes(resizes);
@@ -155,8 +163,8 @@ export class OptimizeCmdBackend extends CmdBackend {
             return p === imgOrigPath;
         });
 
-        const resizedImg = this.logger.resizesToLog.find(r => {
-            r.selector == selector;
+        const resizedImg = this.resizedImgSelectors.find(s => {
+            s == selector;
         });
 
         if (convertedImg || resizedImg) {
@@ -168,7 +176,7 @@ export class OptimizeCmdBackend extends CmdBackend {
         for await (const imgPath of this.convertedImgOriginalPaths) {
             try {
                 await unlink(imgPath);
-                this.logger.deletedConvertedImgPaths.push(imgPath);
+                this.logger.addDeletedImgPathToLog(imgPath);
             } catch(e) {
                 CliLogger.logError(`Failed to delete converted img ${imgPath}`);
                 CliLogger.logError(e);

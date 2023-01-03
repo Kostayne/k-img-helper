@@ -39,7 +39,9 @@ export const defaultCfg: IUserConfig = {
     deleteOriginal: false,
 
     convert: true,
+    convertRecursive: true,
     imgFormat: ImgFormats.webp,
+
     resize: true,
     resizeThreshold: 5,
     breakpointSwitchDelay: 100,
