@@ -41,8 +41,9 @@ npx k-img-helper optimize # if installed locally
 ```
 
 ## Commands
-- `optimize`
 - `analyze`
+- `convert`
+- `optimize`
 - `authors`
 - `help`
 
@@ -89,7 +90,16 @@ export interface IUserConfig {
 }
 ```
 
-Parameters to pass into cli should be in kebab case. Example: detectNoAltAttr becomes detect-no-alt-attr.
+## CLI cfg
+Pass cli params in kebab case
+```
+Example: detectNoAltAttr becomes --detect-no-alt-attr.
+```
+
+Pass false to disable attribute, otherwise it will be true
+```
+Example: --detect-no-alt-attr false
+```
 
 ## Sources
 - [:package: this package on npm](https://www.npmjs.com/package/k-img-helper)
